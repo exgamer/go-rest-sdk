@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"fmt"
-	"github.com/exgamer/go-sdk/pkg/exception"
+	"github.com/exgamer/go-rest-sdk/pkg/exception"
 	"github.com/gin-gonic/gin"
 	"github.com/mitchellh/mapstructure"
 	"net/http"

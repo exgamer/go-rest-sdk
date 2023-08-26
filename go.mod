@@ -1,4 +1,4 @@
-module github.com/exgamer/go-sdk
+module github.com/exgamer/go-rest-sdk
 
 go 1.18
 

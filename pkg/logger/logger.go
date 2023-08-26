@@ -1,7 +1,7 @@
 package logger
 
 import (
-	"github.com/exgamer/go-sdk/pkg/exception"
+	"github.com/exgamer/go-rest-sdk/pkg/exception"
 	"log"
 	"os"
 )
