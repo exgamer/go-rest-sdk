@@ -2,12 +2,12 @@ package mysql
 
 import (
 	"database/sql"
-	"exgamer.kz/go-sdk/pkg/entity"
-	"exgamer.kz/go-sdk/pkg/exception"
-	"exgamer.kz/go-sdk/pkg/form"
-	"exgamer.kz/go-sdk/pkg/logger"
-	paginator "exgamer.kz/go-sdk/pkg/pager"
 	"fmt"
+	"github.com/exgamer/go-sdk/pkg/entity"
+	"github.com/exgamer/go-sdk/pkg/exception"
+	"github.com/exgamer/go-sdk/pkg/form"
+	"github.com/exgamer/go-sdk/pkg/logger"
+	paginator "github.com/exgamer/go-sdk/pkg/pager"
 	"log"
 	"net/http"
 	"reflect"

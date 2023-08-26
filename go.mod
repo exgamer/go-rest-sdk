@@ -1,4 +1,4 @@
-module exgamer.kz/go-sdk
+module github.com/exgamer/go-sdk
 
 go 1.18
 

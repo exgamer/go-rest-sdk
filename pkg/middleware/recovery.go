@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"exgamer.kz/go-sdk/pkg/exception"
-	httpResponse "exgamer.kz/go-sdk/pkg/http"
+	"github.com/exgamer/go-sdk/pkg/exception"
+	httpResponse "github.com/exgamer/go-sdk/pkg/http"
 	"github.com/gin-gonic/gin"
 	"github.com/go-errors/errors"
 	"io"

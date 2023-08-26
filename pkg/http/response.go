@@ -1,7 +1,7 @@
 package http
 
 import (
-	"exgamer.kz/go-sdk/pkg/exception"
+	"github.com/exgamer/go-sdk/pkg/exception"
 	"github.com/gin-gonic/gin"
 )
 
