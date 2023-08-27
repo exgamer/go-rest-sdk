@@ -1,7 +1,7 @@
-package helpers
+package gin
 
 import (
-	middleware "github.com/exgamer/go-rest-sdk/pkg/middleware"
+	"github.com/exgamer/go-rest-sdk/pkg/middleware"
 	"github.com/gin-gonic/gin"
 )
 
