@@ -1,4 +1,4 @@
-package helpers
+package array
 
 func IntersectUint64(slice1 []uint64, slice2 []uint64) []uint64 {
 	var intersect []uint64
