@@ -29,5 +29,5 @@ func ResponseHandler(c *gin.Context) {
 	appException := exception.AppException{}
 	mapstructure.Decode(appExceptionObject, &appException)
 	fmt.Printf("%+v\n", appException)
-	c.JSON(appException.Code, gin.H{"success": false, "message": appException.Error.Error()})
+	c.JSON(appException.Code, gin.H{"success": false, "message": appException.Error.Error(), "details": appException.Context})
 }
