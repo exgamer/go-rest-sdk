@@ -1,5 +1,10 @@
 package exception
 
+import (
+	"github.com/go-errors/errors"
+	"net/http"
+)
+
 type AppException struct {
 	Code    int
 	Error   error
@@ -8,4 +13,8 @@ type AppException struct {
 
 func NewAppException(code int, err error, context map[string]any) *AppException {
 	return &AppException{code, err, context}
+}
+
+func NewValidationAppException(context map[string]any) *AppException {
+	return &AppException{http.StatusUnprocessableEntity, errors.New("VALIDATION ERROR"), context}
 }
