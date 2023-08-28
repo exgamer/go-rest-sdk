@@ -311,6 +311,17 @@ func (queryBuilder *QueryBuilder) AndWhereByCondition(condition string, params .
 }
 
 //AndWhereIn - adds and in condition
+
+func (queryBuilder *QueryBuilder) AndWhereInAny(field string, params []any) *QueryBuilder {
+	var p []string
+
+	for _, v := range params {
+		p = append(p, fmt.Sprint(v))
+	}
+
+	return queryBuilder.WhereIn(field, p, "AND")
+}
+
 func (queryBuilder *QueryBuilder) AndWhereIn(field string, params []string) *QueryBuilder {
 	return queryBuilder.WhereIn(field, params, "AND")
 }
