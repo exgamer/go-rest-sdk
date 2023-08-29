@@ -2,6 +2,7 @@ package structures
 
 import (
 	"reflect"
+	"strings"
 )
 
 type AppConfig struct {
@@ -19,6 +20,16 @@ func (a AppConfig) GetFieldsAsJsonTags() []string {
 
 	for i := 0; i < t.NumField(); i++ {
 		result = append(result, t.Field(i).Tag.Get("json"))
+	}
+
+	return result
+}
+
+func (a AppConfig) GetFieldsAsUpperSnake() []string {
+	result := make([]string, 0)
+
+	for _, v := range a.GetFieldsAsJsonTags() {
+		v = strings.ToUpper(v)
 	}
 
 	return result

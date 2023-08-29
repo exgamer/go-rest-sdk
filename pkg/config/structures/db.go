@@ -1,6 +1,9 @@
 package structures
 
-import "reflect"
+import (
+	"reflect"
+	"strings"
+)
 
 type DbConfig struct {
 	Host                     string `mapstructure:"DB_HOST" json:"db_host"`
@@ -21,6 +24,16 @@ func (a DbConfig) GetFieldsAsJsonTags() []string {
 
 	for i := 0; i < t.NumField(); i++ {
 		result = append(result, t.Field(i).Tag.Get("json"))
+	}
+
+	return result
+}
+
+func (a DbConfig) GetFieldsAsUpperSnake() []string {
+	result := make([]string, 0)
+
+	for _, v := range a.GetFieldsAsJsonTags() {
+		v = strings.ToUpper(v)
 	}
 
 	return result
