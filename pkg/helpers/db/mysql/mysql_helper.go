@@ -10,18 +10,6 @@ import (
 	"time"
 )
 
-func InitMysqlConnection(dbConfig *structures.DbConfig) (*sql.DB, error) {
-	db, err := OpenMysqlConnection(dbConfig)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer db.Close()
-
-	return db, nil
-}
-
 func OpenMysqlConnection(dbConfig *structures.DbConfig) (*sql.DB, error) {
 	// Open up database connection.
 	db, err := sql.Open("mysql", getConnectionString(dbConfig))
@@ -57,6 +45,10 @@ func OpenMysqlConnection(dbConfig *structures.DbConfig) (*sql.DB, error) {
 		dbConfig.Username, stats.Idle, stats.OpenConnections, stats.InUse, stats.WaitCount, stats.WaitDuration, stats.MaxIdleClosed, stats.MaxLifetimeClosed))
 
 	return db, nil
+}
+
+func CloseMysqlConnection(db *sql.DB) {
+	db.Close()
 }
 
 func getConnectionString(dbConfig *structures.DbConfig) string {
