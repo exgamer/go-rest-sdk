@@ -1,6 +1,7 @@
 package mysql
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"github.com/exgamer/go-rest-sdk/pkg/entity"
@@ -13,7 +14,14 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+	"time"
 )
+
+func NewQueryBuilder() *QueryBuilder {
+	return &QueryBuilder{
+		timeout: 30,
+	}
+}
 
 //QueryBuilder - query builder
 type QueryBuilder struct {
@@ -30,6 +38,7 @@ type QueryBuilder struct {
 	OffsetCount    int
 	Order          []string
 	Group          string
+	timeout        time.Duration
 }
 
 type WhereCondition struct {
@@ -68,6 +77,12 @@ func (queryBuilder *QueryBuilder) SetData(data map[string]any) *QueryBuilder {
 //SetFormData - set data to query (for insert/update)
 func (queryBuilder *QueryBuilder) SetFormData(form form.Form) *QueryBuilder {
 	queryBuilder.Data = form.AsMap()
+
+	return queryBuilder
+}
+
+func (queryBuilder *QueryBuilder) SetQueryTimeout(timeout time.Duration) *QueryBuilder {
+	queryBuilder.timeout = timeout
 
 	return queryBuilder
 }
@@ -311,17 +326,6 @@ func (queryBuilder *QueryBuilder) AndWhereByCondition(condition string, params .
 }
 
 //AndWhereIn - adds and in condition
-
-func (queryBuilder *QueryBuilder) AndWhereInAny(field string, params []any) *QueryBuilder {
-	var p []string
-
-	for _, v := range params {
-		p = append(p, fmt.Sprint(v))
-	}
-
-	return queryBuilder.WhereIn(field, p, "AND")
-}
-
 func (queryBuilder *QueryBuilder) AndWhereIn(field string, params []string) *QueryBuilder {
 	return queryBuilder.WhereIn(field, params, "AND")
 }
@@ -441,8 +445,11 @@ func (queryBuilder *QueryBuilder) paginate(paginate bool, page int, perPage int)
 		Page: page,
 	}
 
+	ctx, cancel := context.WithTimeout(context.Background(), queryBuilder.timeout*time.Second)
+	defer cancel()
+
 	if paginate == true {
-		err := queryBuilder.Db.QueryRow(queryBuilder.MakeCountSelectSql(), queryBuilder.GetParams()...).Scan(&pager.TotalItems)
+		err := queryBuilder.Db.QueryRowContext(ctx, queryBuilder.MakeCountSelectSql(), queryBuilder.GetParams()...).Scan(&pager.TotalItems)
 		if err != nil {
 			logger.LogError(err)
 
@@ -457,7 +464,7 @@ func (queryBuilder *QueryBuilder) paginate(paginate bool, page int, perPage int)
 
 	queryBuilder.SetLimitOffsetByPage(page, perPage)
 	// Execute the query
-	rows, err := queryBuilder.Db.Query(queryBuilder.MakeSelectSql(), queryBuilder.GetParams()...)
+	rows, err := queryBuilder.Db.QueryContext(ctx, queryBuilder.MakeSelectSql(), queryBuilder.GetParams()...)
 	if err != nil {
 		logger.LogError(err)
 
@@ -516,7 +523,10 @@ func (queryBuilder *QueryBuilder) paginate(paginate bool, page int, perPage int)
 }
 
 func (queryBuilder *QueryBuilder) Insert() (int64, *exception.AppException) {
-	res, err := queryBuilder.Db.Exec(queryBuilder.MakeInsertSql())
+	ctx, cancel := context.WithTimeout(context.Background(), queryBuilder.timeout*time.Second)
+	defer cancel()
+
+	res, err := queryBuilder.Db.ExecContext(ctx, queryBuilder.MakeInsertSql())
 	if err != nil {
 		return 0, exception.NewAppException(http.StatusInternalServerError, err, nil)
 	}
