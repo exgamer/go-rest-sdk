@@ -6,6 +6,7 @@ import (
 	"github.com/exgamer/go-rest-sdk/pkg/config/structures"
 	"github.com/exgamer/go-rest-sdk/pkg/logger"
 	"log"
+	"strconv"
 	"time"
 )
 
@@ -17,9 +18,23 @@ func OpenMysqlConnection(dbConfig *structures.DbConfig) (*sql.DB, error) {
 		log.Fatal(err)
 	}
 
-	db.SetMaxOpenConns(dbConfig.MaxPoolConnections)
-	db.SetMaxIdleConns(dbConfig.MaxIdlePoolConnections)
-	db.SetConnMaxLifetime(time.Second * time.Duration(dbConfig.ConnectionTimeoutSeconds))
+	maxPoolConnections, err := strconv.Atoi(dbConfig.MaxPoolConnections)
+
+	if err == nil {
+		db.SetMaxOpenConns(maxPoolConnections)
+	}
+
+	maxIdlePoolConnections, err := strconv.Atoi(dbConfig.MaxIdlePoolConnections)
+
+	if err == nil {
+		db.SetMaxIdleConns(maxIdlePoolConnections)
+	}
+
+	connectionTimeoutSeconds, err := strconv.Atoi(dbConfig.ConnectionTimeoutSeconds)
+
+	if err == nil {
+		db.SetConnMaxLifetime(time.Second * time.Duration(connectionTimeoutSeconds))
+	}
 
 	if err := db.Ping(); err != nil {
 		log.Fatal(err)
