@@ -33,7 +33,7 @@ func (a DbConfig) GetFieldsAsUpperSnake() []string {
 	result := make([]string, 0)
 
 	for _, v := range a.GetFieldsAsJsonTags() {
-		v = strings.ToUpper(v)
+		result = append(result, strings.ToUpper(v))
 	}
 
 	return result
