@@ -3,10 +3,10 @@ module github.com/exgamer/go-rest-sdk
 go 1.18
 
 require (
-	github.com/davecgh/go-spew v1.1.1
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-errors/errors v1.4.2
 	github.com/gookit/validate v1.5.1
+	github.com/leeqvip/gophp v1.1.0
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/spf13/viper v1.16.0
 )
