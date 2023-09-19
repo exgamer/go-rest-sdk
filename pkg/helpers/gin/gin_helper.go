@@ -2,6 +2,7 @@ package gin
 
 import (
 	"github.com/gin-gonic/gin"
+	ginprometheus "github.com/zsais/go-gin-prometheus"
 	"net/http"
 )
 
@@ -19,6 +20,9 @@ func InitRouter() *gin.Engine {
 	router.NoMethod(func(c *gin.Context) {
 		c.JSON(http.StatusMethodNotAllowed, gin.H{"code": "METHOD_NOT_ALLOWED", "message": "405 method not allowed"})
 	})
+
+	p := ginprometheus.NewPrometheus("gin")
+	p.Use(router)
 
 	return router
 }
