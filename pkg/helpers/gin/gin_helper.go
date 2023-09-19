@@ -11,6 +11,10 @@ import (
 )
 
 func InitRouter(appConfig *structures.AppConfig) *gin.Engine {
+	if appConfig.AppEnv == "prod" {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
 	// Options
 	router := gin.Default()
 	router.Use(gin.Logger())
