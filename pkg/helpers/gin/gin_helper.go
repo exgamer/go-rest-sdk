@@ -1,17 +1,19 @@
 package gin
 
 import (
+	"fmt"
+	"github.com/exgamer/go-rest-sdk/pkg/config/structures"
+	"github.com/getsentry/sentry-go"
+	sentrygin "github.com/getsentry/sentry-go/gin"
 	"github.com/gin-gonic/gin"
 	ginprometheus "github.com/zsais/go-gin-prometheus"
 	"net/http"
 )
 
-func InitRouter() *gin.Engine {
+func InitRouter(appConfig *structures.AppConfig) *gin.Engine {
 	// Options
 	router := gin.Default()
 	router.Use(gin.Logger())
-	//router.Use(gin.Recovery())
-	//router.Use(middleware.Recovery())
 
 	router.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"code": "PAGE_NOT_FOUND", "message": "404 page not found"})
@@ -23,6 +25,14 @@ func InitRouter() *gin.Engine {
 
 	p := ginprometheus.NewPrometheus("gin")
 	p.Use(router)
+
+	if err := sentry.Init(sentry.ClientOptions{
+		Dsn: appConfig.SentryDsn,
+	}); err != nil {
+		fmt.Printf("Sentry initialization failed: %v\n", err)
+	}
+
+	router.Use(sentrygin.New(sentrygin.Options{}))
 
 	return router
 }

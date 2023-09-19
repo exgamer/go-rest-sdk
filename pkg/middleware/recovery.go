@@ -3,6 +3,7 @@ package middleware
 import (
 	"github.com/exgamer/go-rest-sdk/pkg/exception"
 	httpResponse "github.com/exgamer/go-rest-sdk/pkg/http"
+	"github.com/getsentry/sentry-go"
 	"github.com/gin-gonic/gin"
 	"github.com/go-errors/errors"
 	"io"
@@ -31,6 +32,7 @@ func RecoveryWithWriter(out io.Writer) gin.HandlerFunc {
 					logger.Printf("[Recovery] panic recovered:\n\n%s%s\n\n%s%s", httprequest, goErr.Error(), goErr.Stack(), reset)
 				}
 
+				sentry.CaptureException(errors.New(err))
 				httpResponse.Error(c, exception.NewAppException(http.StatusInternalServerError, errors.New(err), nil))
 			}
 		}()

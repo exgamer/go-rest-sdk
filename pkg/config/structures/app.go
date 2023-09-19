@@ -10,6 +10,7 @@ type AppConfig struct {
 	HostName      string `mapstructure:"HOST_NAME" json:"host_name"`
 	Version       string `mapstructure:"APP_VERSION" json:"app_version"`
 	ServerAddress string `mapstructure:"SERVER_ADDRESS" json:"server_address"`
+	SentryDsn     string `mapstructure:"SENTRY_DSN"    json:"sentry_dsn"`
 }
 
 func (a AppConfig) GetFieldsAsJsonTags() []string {
