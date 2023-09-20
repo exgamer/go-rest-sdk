@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/exgamer/go-rest-sdk/pkg/config/structures"
 	"github.com/exgamer/go-rest-sdk/pkg/logger"
+	_ "github.com/go-sql-driver/mysql"
 	"log"
 	"strconv"
 	"time"
