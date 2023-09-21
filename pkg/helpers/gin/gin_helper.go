@@ -13,8 +13,6 @@ import (
 func InitRouter(appConfig *structures.AppConfig) *gin.Engine {
 	if appConfig.AppEnv == "prod" {
 		gin.SetMode(gin.ReleaseMode)
-	} else {
-		gin.SetMode(gin.DebugMode)
 	}
 
 	// Options
