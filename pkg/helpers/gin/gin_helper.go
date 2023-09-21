@@ -13,11 +13,12 @@ import (
 func InitRouter(appConfig *structures.AppConfig) *gin.Engine {
 	if appConfig.AppEnv == "prod" {
 		gin.SetMode(gin.ReleaseMode)
+	} else {
+		gin.SetMode(gin.DebugMode)
 	}
 
 	// Options
 	router := gin.Default()
-	router.Use(gin.Logger())
 
 	router.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"code": "PAGE_NOT_FOUND", "message": "404 page not found"})
