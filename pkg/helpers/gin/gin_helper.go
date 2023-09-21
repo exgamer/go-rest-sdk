@@ -16,8 +16,7 @@ func InitRouter(appConfig *structures.AppConfig) *gin.Engine {
 	}
 
 	// Options
-	router := gin.Default()
-
+	router := gin.New()
 	router.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"code": "PAGE_NOT_FOUND", "message": "404 page not found"})
 	})
@@ -36,6 +35,8 @@ func InitRouter(appConfig *structures.AppConfig) *gin.Engine {
 	}
 
 	router.Use(sentrygin.New(sentrygin.Options{}))
+
+	router.Use(gin.Logger(), gin.Recovery())
 
 	return router
 }
