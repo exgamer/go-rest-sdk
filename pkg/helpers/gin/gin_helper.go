@@ -3,10 +3,10 @@ package gin
 import (
 	"fmt"
 	"github.com/exgamer/go-rest-sdk/pkg/config/structures"
-	"github.com/exgamer/go-rest-sdk/pkg/middleware"
 	"github.com/getsentry/sentry-go"
 	sentrygin "github.com/getsentry/sentry-go/gin"
 	"github.com/gin-gonic/gin"
+	"github.com/go-errors/errors"
 	ginprometheus "github.com/zsais/go-gin-prometheus"
 	"net/http"
 )
@@ -19,8 +19,9 @@ func InitRouter(appConfig *structures.AppConfig) *gin.Engine {
 	// Options
 	router := gin.Default()
 	router.Use(gin.Logger())
-	//router.Use(gin.Recovery())
-	router.Use(middleware.Recovery())
+	router.Use(gin.CustomRecovery(ErrorHandler))
+
+	//router.Use(middleware.Recovery())
 
 	router.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"code": "PAGE_NOT_FOUND", "message": "404 page not found"})
@@ -42,4 +43,16 @@ func InitRouter(appConfig *structures.AppConfig) *gin.Engine {
 	router.Use(sentrygin.New(sentrygin.Options{}))
 
 	return router
+}
+
+type HttpResponse struct {
+	Message     string
+	Status      int
+	Description string
+}
+
+func ErrorHandler(c *gin.Context, err any) {
+	goErr := errors.Wrap(err, 2)
+	httpResponse := HttpResponse{Message: "Internal server error", Status: 500, Description: goErr.Error()}
+	c.AbortWithStatusJSON(500, httpResponse)
 }
