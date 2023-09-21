@@ -12,8 +12,8 @@ import (
 func ResponseHandler(c *gin.Context) {
 	c.Next()
 	for _, err := range c.Errors {
-		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "data": err.Error()})
 		sentry.CaptureException(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "data": err.Error()})
 
 		return
 	}
@@ -30,7 +30,7 @@ func ResponseHandler(c *gin.Context) {
 
 	appException := exception.AppException{}
 	mapstructure.Decode(appExceptionObject, &appException)
+	sentry.CaptureException(appException.Error)
 	fmt.Printf("%+v\n", appException)
 	c.JSON(appException.Code, gin.H{"success": false, "message": appException.Error.Error(), "details": appException.Context})
-	sentry.CaptureException(appException.Error)
 }

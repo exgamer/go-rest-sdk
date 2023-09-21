@@ -18,6 +18,7 @@ func Recovery() gin.HandlerFunc {
 
 func RecoveryWithWriter(out io.Writer) gin.HandlerFunc {
 	var logger *log.Logger
+
 	if out != nil {
 		logger = log.New(out, "\n\n\x1b[31m", log.LstdFlags)
 	}
@@ -32,8 +33,8 @@ func RecoveryWithWriter(out io.Writer) gin.HandlerFunc {
 					logger.Printf("[Recovery] panic recovered:\n\n%s%s\n\n%s%s", httprequest, goErr.Error(), goErr.Stack(), reset)
 				}
 
-				httpResponse.Error(c, exception.NewAppException(http.StatusInternalServerError, errors.New(err), nil))
 				sentry.CaptureException(errors.New(err))
+				httpResponse.Error(c, exception.NewAppException(http.StatusInternalServerError, errors.New(err), nil))
 			}
 		}()
 		c.Next()

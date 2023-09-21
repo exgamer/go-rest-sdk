@@ -3,6 +3,7 @@ package gin
 import (
 	"fmt"
 	"github.com/exgamer/go-rest-sdk/pkg/config/structures"
+	"github.com/exgamer/go-rest-sdk/pkg/middleware"
 	"github.com/getsentry/sentry-go"
 	sentrygin "github.com/getsentry/sentry-go/gin"
 	"github.com/gin-gonic/gin"
@@ -18,6 +19,8 @@ func InitRouter(appConfig *structures.AppConfig) *gin.Engine {
 	// Options
 	router := gin.Default()
 	router.Use(gin.Logger())
+	//router.Use(gin.Recovery())
+	router.Use(middleware.Recovery())
 
 	router.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"code": "PAGE_NOT_FOUND", "message": "404 page not found"})
