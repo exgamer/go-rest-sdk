@@ -32,8 +32,8 @@ func RecoveryWithWriter(out io.Writer) gin.HandlerFunc {
 					logger.Printf("[Recovery] panic recovered:\n\n%s%s\n\n%s%s", httprequest, goErr.Error(), goErr.Stack(), reset)
 				}
 
-				sentry.CaptureException(errors.New(err))
 				httpResponse.Error(c, exception.NewAppException(http.StatusInternalServerError, errors.New(err), nil))
+				sentry.CaptureException(errors.New(err))
 			}
 		}()
 		c.Next()
