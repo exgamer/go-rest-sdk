@@ -45,6 +45,14 @@ func InitRouter(appConfig *structures.AppConfig) *gin.Engine {
 
 func ErrorHandler(c *gin.Context, err any) {
 	goErr := errors.Wrap(err, 2)
+
+	details := make([]string, 0)
+
+	for _, frame := range goErr.StackFrames() {
+		details = append(details, frame.String())
+	}
+
 	sentry.CaptureException(goErr)
-	c.JSON(http.StatusInternalServerError, gin.H{"success": false, "data": goErr.Error(), "details": goErr.ErrorStack()})
+
+	c.JSON(http.StatusInternalServerError, gin.H{"success": false, "data": goErr.Error(), "details": details})
 }
