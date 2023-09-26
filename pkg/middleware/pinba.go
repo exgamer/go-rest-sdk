@@ -10,6 +10,12 @@ import (
 
 func PinbaHandler(config *structures.AppConfig) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		if config.PinbaHost == "" {
+			c.Next()
+
+			return
+		}
+
 		start := time.Now()
 		pc, err := gopinba.NewClient(config.PinbaHost)
 
