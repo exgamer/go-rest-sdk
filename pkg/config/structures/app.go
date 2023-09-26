@@ -12,6 +12,7 @@ type AppConfig struct {
 	ServerAddress string `mapstructure:"SERVER_ADDRESS" json:"server_address"`
 	SentryDsn     string `mapstructure:"SENTRY_DSN"    json:"sentry_dsn"`
 	AppEnv        string `mapstructure:"APP_ENV"    json:"app_env"`
+	PinbaHost     string `mapstructure:"PINBA_HOST"    json:"pinba_host"`
 }
 
 func (a AppConfig) GetFieldsAsJsonTags() []string {
