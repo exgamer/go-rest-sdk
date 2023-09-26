@@ -6,6 +6,7 @@ import (
 	"github.com/getsentry/sentry-go"
 	sentrygin "github.com/getsentry/sentry-go/gin"
 	"github.com/gin-gonic/gin"
+	"github.com/go-errors/errors"
 	ginprometheus "github.com/zsais/go-gin-prometheus"
 	"net/http"
 )
@@ -36,7 +37,14 @@ func InitRouter(appConfig *structures.AppConfig) *gin.Engine {
 
 	router.Use(sentrygin.New(sentrygin.Options{}))
 
-	router.Use(gin.Logger(), gin.Recovery())
+	router.Use(gin.Logger())
+	router.Use(gin.CustomRecovery(ErrorHandler))
 
 	return router
+}
+
+func ErrorHandler(c *gin.Context, err any) {
+	goErr := errors.Wrap(err, 2)
+	sentry.CaptureException(goErr)
+	c.JSON(http.StatusInternalServerError, gin.H{"success": false, "data": goErr.Error(), "details": goErr.ErrorStack()})
 }
