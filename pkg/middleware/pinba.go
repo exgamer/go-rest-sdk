@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"github.com/davecgh/go-spew/spew"
 	"github.com/exgamer/go-rest-sdk/pkg/config/structures"
 	"github.com/exgamer/go-rest-sdk/pkg/logger"
 	"github.com/gin-gonic/gin"
@@ -29,7 +28,7 @@ func PinbaHandler(config *structures.AppConfig) gin.HandlerFunc {
 
 		req.Status = uint32(c.Writer.Status())
 		req.RequestTime = time.Since(start)
-		spew.Dump(req)
+
 		err = pc.SendRequest(&req)
 
 		if err != nil {
