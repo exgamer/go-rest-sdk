@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/exgamer/go-rest-sdk/pkg/config/structures"
+	"github.com/exgamer/go-rest-sdk/pkg/helpers/structHelper"
 	"github.com/spf13/viper"
 	"log"
 	"os"
@@ -11,9 +12,30 @@ import (
 )
 
 func InitBaseConfig() (*structures.AppConfig, *structures.DbConfig, error) {
-	appConfig := &structures.AppConfig{}
-	dbConfig := &structures.DbConfig{}
+	appConfigInterface, err := InitConfig(structures.AppConfig{})
 
+	if err != nil {
+		log.Fatalf("Some error occurred. Err: %s", err)
+	}
+
+	appConfig, ok := appConfigInterface.(*structures.AppConfig)
+
+	if !ok {
+		log.Fatalf("cannot init app config. Err: %s", ok)
+	}
+
+	dbConfigInterface, err := InitConfig(structures.DbConfig{})
+
+	dbConfig, ok := dbConfigInterface.(*structures.DbConfig)
+
+	if !ok {
+		log.Fatalf("cannot init db config. Err: %s", ok)
+	}
+
+	return appConfig, dbConfig, nil
+}
+
+func InitConfig(config interface{}) (interface{}, error) {
 	workingDir, err := os.Getwd()
 
 	if err != nil {
@@ -31,11 +53,10 @@ func InitBaseConfig() (*structures.AppConfig, *structures.DbConfig, error) {
 			log.Fatalf("Some error occured. Err: %s", err)
 		}
 
-		viper.Unmarshal(&appConfig)
-		viper.Unmarshal(&dbConfig)
+		viper.Unmarshal(&config)
 	}
 
-	envKeys := append(appConfig.GetFieldsAsUpperSnake(), dbConfig.GetFieldsAsUpperSnake()...)
+	envKeys := append(structHelper.GetFieldsAsUpperSnake(config))
 
 	osEnvMap := make(map[string]string)
 
@@ -49,8 +70,7 @@ func InitBaseConfig() (*structures.AppConfig, *structures.DbConfig, error) {
 	//	// Convert the map to JSON
 	jsonData, _ := json.Marshal(osEnvMap)
 	// Convert the JSON to a struct
-	json.Unmarshal(jsonData, &appConfig)
-	json.Unmarshal(jsonData, &dbConfig)
+	json.Unmarshal(jsonData, &config)
 
-	return appConfig, dbConfig, nil
+	return config, nil
 }
