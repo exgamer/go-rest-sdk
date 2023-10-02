@@ -12,7 +12,7 @@ import (
 )
 
 func InitBaseConfig() (*structures.AppConfig, *structures.DbConfig, error) {
-	appConfigInterface, err := InitConfig(structures.AppConfig{})
+	appConfigInterface, err := InitConfig(&structures.AppConfig{})
 
 	if err != nil {
 		log.Fatalf("Some error occurred. Err: %s", err)
@@ -24,7 +24,7 @@ func InitBaseConfig() (*structures.AppConfig, *structures.DbConfig, error) {
 		log.Fatalf("cannot init app config. Err: %s", ok)
 	}
 
-	dbConfigInterface, err := InitConfig(structures.DbConfig{})
+	dbConfigInterface, err := InitConfig(&structures.DbConfig{})
 
 	dbConfig, ok := dbConfigInterface.(*structures.DbConfig)
 
