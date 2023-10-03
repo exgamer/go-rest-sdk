@@ -1,4 +1,4 @@
-package mysql
+package redis
 
 import (
 	"github.com/exgamer/go-rest-sdk/pkg/config/structures"
@@ -6,11 +6,13 @@ import (
 )
 
 func OpenRedisConnection(redisConfig *structures.RedisConfig) *redis.Client {
+	poolSize := redisConfig.PoolSize
+
 	client := redis.NewClient(&redis.Options{
 		Addr:     redisConfig.RedisHost,
 		Password: redisConfig.RedisPassword,
 		DB:       redisConfig.RedisDb,
-		PoolSize: redisConfig.PoolSize,
+		PoolSize: poolSize,
 	})
 
 	return client
