@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-func InitBaseConfig() (*structures.AppConfig, *structures.DbConfig, error) {
+func InitBaseConfig() (*structures.AppConfig, *structures.DbConfig, *structures.RedisConfig, error) {
 	appConfigInterface, err := InitConfig(&structures.AppConfig{})
 
 	if err != nil {
@@ -32,7 +32,19 @@ func InitBaseConfig() (*structures.AppConfig, *structures.DbConfig, error) {
 		log.Fatalf("cannot init db config. Err: %s", ok)
 	}
 
-	return appConfig, dbConfig, nil
+	redisConfigInterface, err := InitConfig(&structures.RedisConfig{})
+
+	if err != nil {
+		log.Fatalf("Some error occurred. Err: %s", err)
+	}
+
+	redisConfig, ok := redisConfigInterface.(*structures.RedisConfig)
+
+	if !ok {
+		log.Fatalf("cannot init app config. Err: %s", ok)
+	}
+
+	return appConfig, dbConfig, redisConfig, nil
 }
 
 func InitConfig(config interface{}) (interface{}, error) {
