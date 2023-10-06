@@ -19,26 +19,28 @@ import (
 
 func NewQueryBuilder() *QueryBuilder {
 	return &QueryBuilder{
-		timeout: 30,
+		timeout:          30,
+		ValuePlaceholder: "?",
 	}
 }
 
 //QueryBuilder - query builder
 type QueryBuilder struct {
-	Db             *sql.DB
-	TableName      string
-	TableAliasName string
-	Data           map[string]any
-	WhereCondition []WhereCondition
-	CalcRows       bool
-	SelectArray    []string
-	JoinCondition  []JoinCondition
-	Params         []any
-	LimitCount     int
-	OffsetCount    int
-	Order          []string
-	Group          string
-	timeout        time.Duration
+	Db               *sql.DB
+	TableName        string
+	TableAliasName   string
+	Data             map[string]any
+	WhereCondition   []WhereCondition
+	CalcRows         bool
+	SelectArray      []string
+	JoinCondition    []JoinCondition
+	Params           []any
+	LimitCount       int
+	OffsetCount      int
+	Order            []string
+	Group            string
+	timeout          time.Duration
+	ValuePlaceholder string
 }
 
 type WhereCondition struct {
@@ -55,6 +57,12 @@ type JoinCondition struct {
 //SetDb - set sql.DB connection (for make query)
 func (queryBuilder *QueryBuilder) SetDb(db *sql.DB) *QueryBuilder {
 	queryBuilder.Db = db
+
+	return queryBuilder
+}
+
+func (queryBuilder *QueryBuilder) SetValuePlaceholder(placeholder string) *QueryBuilder {
+	queryBuilder.ValuePlaceholder = placeholder
 
 	return queryBuilder
 }
@@ -299,7 +307,7 @@ func (queryBuilder *QueryBuilder) makeJoinSql() string {
 
 //OrWhere - adds or where condition
 func (queryBuilder *QueryBuilder) OrWhere(field string, value string) *QueryBuilder {
-	queryBuilder.OrWhereByCondition(field+"=?", value)
+	queryBuilder.OrWhereByCondition(field+"="+queryBuilder.ValuePlaceholder, value)
 
 	return queryBuilder
 }
@@ -313,7 +321,7 @@ func (queryBuilder *QueryBuilder) OrWhereByCondition(condition string, params ..
 
 //AndWhere - adds and where condition
 func (queryBuilder *QueryBuilder) AndWhere(field string, value string) *QueryBuilder {
-	queryBuilder.AndWhereByCondition(field+"=?", value)
+	queryBuilder.AndWhereByCondition(field+"="+queryBuilder.ValuePlaceholder, value)
 
 	return queryBuilder
 }
@@ -334,7 +342,7 @@ func (queryBuilder *QueryBuilder) AndWhereIn(field string, params []string) *Que
 func (queryBuilder *QueryBuilder) WhereIn(field string, params []string, operator string) *QueryBuilder {
 	sParams := make([]string, 0)
 	for i := 0; i < len(params); i++ {
-		sParams = append(sParams, "?")
+		sParams = append(sParams, queryBuilder.ValuePlaceholder)
 		queryBuilder.Params = append(queryBuilder.Params, params[i])
 	}
 
