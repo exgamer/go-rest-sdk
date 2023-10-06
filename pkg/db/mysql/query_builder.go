@@ -24,6 +24,20 @@ func NewQueryBuilder() *QueryBuilder {
 	}
 }
 
+func NewMysqlQueryBuilder() *QueryBuilder {
+	return &QueryBuilder{
+		timeout: 30,
+		DbType:  "postgres",
+	}
+}
+
+func NewPostgresQueryBuilder() *QueryBuilder {
+	return &QueryBuilder{
+		timeout: 30,
+		DbType:  "postgres",
+	}
+}
+
 //QueryBuilder - query builder
 type QueryBuilder struct {
 	Db               *sql.DB
