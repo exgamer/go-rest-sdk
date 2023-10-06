@@ -7,9 +7,9 @@ require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-errors/errors v1.4.2
 	github.com/go-sql-driver/mysql v1.7.1
-	github.com/gomodule/redigo v1.8.9
 	github.com/gookit/validate v1.5.1
 	github.com/leeqvip/gophp v1.1.0
+	github.com/lib/pq v1.10.9
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/mkevac/gopinba v0.0.0-20171206104754-471ad6b3e951
 	github.com/spf13/viper v1.16.0
