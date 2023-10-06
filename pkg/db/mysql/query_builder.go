@@ -19,8 +19,8 @@ import (
 
 func NewQueryBuilder() *QueryBuilder {
 	return &QueryBuilder{
-		timeout:          30,
-		ValuePlaceholder: "?",
+		timeout: 30,
+		DbType:  "mysql",
 	}
 }
 
@@ -41,6 +41,7 @@ type QueryBuilder struct {
 	Group            string
 	timeout          time.Duration
 	ValuePlaceholder string
+	DbType           string
 }
 
 type WhereCondition struct {
@@ -61,10 +62,20 @@ func (queryBuilder *QueryBuilder) SetDb(db *sql.DB) *QueryBuilder {
 	return queryBuilder
 }
 
-func (queryBuilder *QueryBuilder) SetValuePlaceholder(placeholder string) *QueryBuilder {
-	queryBuilder.ValuePlaceholder = placeholder
+func (queryBuilder *QueryBuilder) SetDbType(dbType string) *QueryBuilder {
+	queryBuilder.DbType = dbType
 
 	return queryBuilder
+}
+
+func (queryBuilder *QueryBuilder) getPlaceholder(i int) string {
+	if queryBuilder.DbType == "postgres" {
+		index := len(queryBuilder.Params) + 1 + i
+
+		return "$" + strconv.Itoa(index)
+	}
+
+	return "?"
 }
 
 //SetEntity - set entity to query
@@ -307,7 +318,7 @@ func (queryBuilder *QueryBuilder) makeJoinSql() string {
 
 //OrWhere - adds or where condition
 func (queryBuilder *QueryBuilder) OrWhere(field string, value string) *QueryBuilder {
-	queryBuilder.OrWhereByCondition(field+"="+queryBuilder.ValuePlaceholder, value)
+	queryBuilder.OrWhereByCondition(field+"="+queryBuilder.getPlaceholder(0), value)
 
 	return queryBuilder
 }
@@ -321,7 +332,7 @@ func (queryBuilder *QueryBuilder) OrWhereByCondition(condition string, params ..
 
 //AndWhere - adds and where condition
 func (queryBuilder *QueryBuilder) AndWhere(field string, value string) *QueryBuilder {
-	queryBuilder.AndWhereByCondition(field+"="+queryBuilder.ValuePlaceholder, value)
+	queryBuilder.AndWhereByCondition(field+"="+queryBuilder.getPlaceholder(0), value)
 
 	return queryBuilder
 }
@@ -341,8 +352,9 @@ func (queryBuilder *QueryBuilder) AndWhereIn(field string, params []string) *Que
 //WhereIn - adds in condition
 func (queryBuilder *QueryBuilder) WhereIn(field string, params []string, operator string) *QueryBuilder {
 	sParams := make([]string, 0)
+
 	for i := 0; i < len(params); i++ {
-		sParams = append(sParams, queryBuilder.ValuePlaceholder)
+		sParams = append(sParams, queryBuilder.getPlaceholder(i))
 		queryBuilder.Params = append(queryBuilder.Params, params[i])
 	}
 
