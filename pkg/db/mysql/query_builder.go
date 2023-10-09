@@ -466,6 +466,13 @@ func (queryBuilder *QueryBuilder) All() (*[]map[string]interface{}, *exception.A
 	return res, appException
 }
 
+//One - returns one query result
+func (queryBuilder *QueryBuilder) One() (*[]map[string]interface{}, *exception.AppException) {
+	res, _, appException := queryBuilder.paginate(false, 0, 1)
+
+	return res, appException
+}
+
 //Paginate - returns paginated query result
 func (queryBuilder *QueryBuilder) Paginate(page int, perPage int) (*[]map[string]interface{}, *paginator.Pager, *exception.AppException) {
 	return queryBuilder.paginate(true, page, perPage)
