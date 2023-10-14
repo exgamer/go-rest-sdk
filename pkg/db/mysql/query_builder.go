@@ -322,7 +322,8 @@ func (queryBuilder *QueryBuilder) makeJoinSql() string {
 		return sqlString
 	}
 
-	var joinArray []string
+	joinArray := make([]string, len(queryBuilder.JoinCondition))
+
 	for i := 0; i < len(queryBuilder.JoinCondition); i++ {
 		joinArray = append(joinArray, queryBuilder.JoinCondition[i].Type+" "+queryBuilder.JoinCondition[i].Table+" ON "+queryBuilder.JoinCondition[i].On)
 	}
@@ -365,7 +366,7 @@ func (queryBuilder *QueryBuilder) AndWhereIn(field string, params []string) *Que
 
 //WhereIn - adds in condition
 func (queryBuilder *QueryBuilder) WhereIn(field string, params []string, operator string) *QueryBuilder {
-	sParams := make([]string, 0)
+	sParams := make([]string, len(params))
 
 	for i := 0; i < len(params); i++ {
 		sParams = append(sParams, queryBuilder.getPlaceholder(i))
@@ -398,7 +399,8 @@ func (queryBuilder *QueryBuilder) makeWhereSql() string {
 		return sqlString
 	}
 
-	var whereArray []string
+	whereArray := make([]string, len(queryBuilder.WhereCondition))
+
 	for i := 0; i < len(queryBuilder.WhereCondition); i++ {
 		if i == 0 {
 			fmt.Printf("%v", whereArray)
@@ -415,10 +417,12 @@ func (queryBuilder *QueryBuilder) makeWhereSql() string {
 
 //MakeInsertSql - returns insert sql string
 func (queryBuilder *QueryBuilder) MakeInsertSql() string {
-	var cols []string
-	var vals []string
+	cols := make([]string, len(queryBuilder.Data))
+	vals := make([]string, len(queryBuilder.Data))
+
 	for key, element := range queryBuilder.Data {
 		cols = append(cols, key)
+
 		if reflect.TypeOf(element).Name() == "string" {
 			vals = append(vals, "'"+fmt.Sprint(element)+"'")
 		} else {
@@ -434,7 +438,8 @@ func (queryBuilder *QueryBuilder) MakeInsertSql() string {
 
 //MakeUpdateSql - returns update sql string
 func (queryBuilder *QueryBuilder) MakeUpdateSql() string {
-	var cols []string
+	cols := make([]string, len(queryBuilder.Data))
+
 	for key, element := range queryBuilder.Data {
 		if reflect.TypeOf(element).Name() == "string" {
 			cols = append(cols, key+"='"+fmt.Sprint(element)+"'")
