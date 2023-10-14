@@ -56,9 +56,9 @@ func InitConfig(config interface{}) (interface{}, error) {
 		viper.Unmarshal(&config)
 	}
 
-	envKeys := append(structHelper.GetFieldsAsUpperSnake(config))
+	envKeys := structHelper.GetFieldsAsUpperSnake(config)
 
-	osEnvMap := make(map[string]string)
+	osEnvMap := make(map[string]string, len(envKeys))
 
 	for _, key := range envKeys {
 		if value, exists := os.LookupEnv(key); exists {

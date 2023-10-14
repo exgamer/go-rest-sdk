@@ -6,23 +6,25 @@ import (
 )
 
 func GetFieldsAsJsonTags(str interface{}) []string {
-	result := make([]string, 0)
-
 	val := reflect.ValueOf(str).Elem()
 	t := val.Type()
 
+	result := make([]string, t.NumField())
+
 	for i := 0; i < t.NumField(); i++ {
-		result = append(result, t.Field(i).Tag.Get("json"))
+		result[i] = t.Field(i).Tag.Get("json")
 	}
 
 	return result
 }
 
 func GetFieldsAsUpperSnake(str interface{}) []string {
-	result := make([]string, 0)
+	fields := GetFieldsAsJsonTags(str)
 
-	for _, v := range GetFieldsAsJsonTags(str) {
-		result = append(result, strings.ToUpper(v))
+	result := make([]string, len(fields))
+
+	for i, v := range fields {
+		result[i] = strings.ToUpper(v)
 	}
 
 	return result
