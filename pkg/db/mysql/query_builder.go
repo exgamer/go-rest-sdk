@@ -151,6 +151,7 @@ func (queryBuilder *QueryBuilder) CalculateRows() *QueryBuilder {
 func (queryBuilder *QueryBuilder) SetLimitOffsetByPage(page int, perPage int) *QueryBuilder {
 	var limit = 30
 	var offset = 0
+
 	if perPage > 0 {
 		limit = perPage
 	}
@@ -228,6 +229,7 @@ func (queryBuilder *QueryBuilder) MakeSelectSql() string {
 //makeSelectSql - returns full select sql string
 func (queryBuilder *QueryBuilder) makeSelectSql(countSelect bool, addOrder bool) string {
 	sqlString := "SELECT "
+
 	if queryBuilder.CalcRows == true {
 		sqlString += " SQL_CALC_FOUND_ROWS "
 	}
@@ -243,12 +245,14 @@ func (queryBuilder *QueryBuilder) makeSelectSql(countSelect bool, addOrder bool)
 	}
 
 	sqlString += " FROM " + queryBuilder.TableName
+
 	if len(queryBuilder.TableAliasName) > 0 {
 		sqlString += " " + queryBuilder.TableAliasName
 	}
 
 	sqlString += " " + queryBuilder.makeJoinSql()
 	sqlString += " " + queryBuilder.makeWhereSql()
+
 	if len(queryBuilder.Group) > 0 {
 		sqlString += " GROUP BY " + queryBuilder.Group
 	}
@@ -310,6 +314,7 @@ func (queryBuilder *QueryBuilder) LeftJoin(table string, first string, second st
 func (queryBuilder *QueryBuilder) join(table string, on string, joinType string, params ...string) {
 	join := JoinCondition{Table: table, On: on, Type: joinType}
 	queryBuilder.JoinCondition = append(queryBuilder.JoinCondition, join)
+
 	for _, p := range params {
 		queryBuilder.Params = append(queryBuilder.Params, p)
 	}
@@ -318,6 +323,7 @@ func (queryBuilder *QueryBuilder) join(table string, on string, joinType string,
 //makeJoinSql - returns join part of sql string
 func (queryBuilder *QueryBuilder) makeJoinSql() string {
 	sqlString := ""
+
 	if len(queryBuilder.JoinCondition) == 0 {
 		return sqlString
 	}
@@ -325,7 +331,7 @@ func (queryBuilder *QueryBuilder) makeJoinSql() string {
 	joinArray := make([]string, len(queryBuilder.JoinCondition))
 
 	for i := 0; i < len(queryBuilder.JoinCondition); i++ {
-		joinArray = append(joinArray, queryBuilder.JoinCondition[i].Type+" "+queryBuilder.JoinCondition[i].Table+" ON "+queryBuilder.JoinCondition[i].On)
+		joinArray[i] = queryBuilder.JoinCondition[i].Type + " " + queryBuilder.JoinCondition[i].Table + " ON " + queryBuilder.JoinCondition[i].On
 	}
 
 	return strings.Join(joinArray, " ")
@@ -369,7 +375,7 @@ func (queryBuilder *QueryBuilder) WhereIn(field string, params []string, operato
 	sParams := make([]string, len(params))
 
 	for i := 0; i < len(params); i++ {
-		sParams = append(sParams, queryBuilder.getPlaceholder(i))
+		sParams[i] = queryBuilder.getPlaceholder(i)
 		queryBuilder.Params = append(queryBuilder.Params, params[i])
 	}
 
@@ -385,6 +391,7 @@ func (queryBuilder *QueryBuilder) WhereByCondition(condition string, operator st
 	where := WhereCondition{Condition: condition, Operator: operator}
 	queryBuilder.WhereCondition = append(queryBuilder.WhereCondition, where)
 	fmt.Print(params)
+
 	for _, p := range params {
 		queryBuilder.Params = append(queryBuilder.Params, p)
 	}
@@ -395,6 +402,7 @@ func (queryBuilder *QueryBuilder) WhereByCondition(condition string, operator st
 //makeWhereSql - returns where part of sql string
 func (queryBuilder *QueryBuilder) makeWhereSql() string {
 	sqlString := ""
+
 	if len(queryBuilder.WhereCondition) == 0 {
 		return sqlString
 	}
@@ -404,12 +412,13 @@ func (queryBuilder *QueryBuilder) makeWhereSql() string {
 	for i := 0; i < len(queryBuilder.WhereCondition); i++ {
 		if i == 0 {
 			fmt.Printf("%v", whereArray)
-			whereArray = append(whereArray, queryBuilder.WhereCondition[i].Condition)
+
+			whereArray[i] = queryBuilder.WhereCondition[i].Condition
 
 			continue
 		}
 
-		whereArray = append(whereArray, queryBuilder.WhereCondition[i].Operator+" "+queryBuilder.WhereCondition[i].Condition)
+		whereArray[i] = queryBuilder.WhereCondition[i].Operator + " " + queryBuilder.WhereCondition[i].Condition
 	}
 
 	return " WHERE " + strings.Join(whereArray, " ")
@@ -420,14 +429,18 @@ func (queryBuilder *QueryBuilder) MakeInsertSql() string {
 	cols := make([]string, len(queryBuilder.Data))
 	vals := make([]string, len(queryBuilder.Data))
 
+	i := 0
+
 	for key, element := range queryBuilder.Data {
-		cols = append(cols, key)
+		cols[i] = key
 
 		if reflect.TypeOf(element).Name() == "string" {
-			vals = append(vals, "'"+fmt.Sprint(element)+"'")
+			vals[i] = "'" + fmt.Sprint(element) + "'"
 		} else {
-			vals = append(vals, fmt.Sprint(element))
+			vals[i] = fmt.Sprint(element)
 		}
+
+		i++
 	}
 
 	sqlString := "INSERT INTO " + queryBuilder.TableName + " (" + strings.Join(cols, ",") + ") VALUES" + " (" + strings.Join(vals, ",") + ")"
@@ -440,12 +453,16 @@ func (queryBuilder *QueryBuilder) MakeInsertSql() string {
 func (queryBuilder *QueryBuilder) MakeUpdateSql() string {
 	cols := make([]string, len(queryBuilder.Data))
 
+	i := 0
+
 	for key, element := range queryBuilder.Data {
 		if reflect.TypeOf(element).Name() == "string" {
-			cols = append(cols, key+"='"+fmt.Sprint(element)+"'")
+			cols[i] = key + "='" + fmt.Sprint(element) + "'"
 		} else {
-			cols = append(cols, key+"="+fmt.Sprint(element))
+			cols[i] = key + "=" + fmt.Sprint(element)
 		}
+
+		i++
 	}
 
 	sqlString := "UPDATE " + queryBuilder.TableName + " SET " + strings.Join(cols, ",") + " "
@@ -511,6 +528,7 @@ func (queryBuilder *QueryBuilder) paginate(paginate bool, page int, perPage int)
 	queryBuilder.SetLimitOffsetByPage(page, perPage)
 	// Execute the query
 	rows, err := queryBuilder.Db.QueryContext(ctx, queryBuilder.MakeSelectSql(), queryBuilder.GetParams()...)
+
 	if err != nil {
 		logger.LogError(err)
 
@@ -520,6 +538,7 @@ func (queryBuilder *QueryBuilder) paginate(paginate bool, page int, perPage int)
 	defer rows.Close()
 	//  Data columns
 	columns, err := rows.Columns()
+
 	if err != nil {
 		logger.LogError(err)
 
@@ -532,6 +551,7 @@ func (queryBuilder *QueryBuilder) paginate(paginate bool, page int, perPage int)
 	values := make([]interface{}, count)
 	//  The address of the value of each column of a piece of data
 	valPointers := make([]interface{}, count)
+
 	for rows.Next() {
 		//  Get the address of the value of each column
 		for i := 0; i < count; i++ {
@@ -573,11 +593,13 @@ func (queryBuilder *QueryBuilder) Insert() (int64, *exception.AppException) {
 	defer cancel()
 
 	res, err := queryBuilder.Db.ExecContext(ctx, queryBuilder.MakeInsertSql())
+
 	if err != nil {
 		return 0, exception.NewAppException(http.StatusInternalServerError, err, nil)
 	}
 
 	lastId, err := res.LastInsertId()
+
 	if err != nil {
 		return 0, exception.NewAppException(http.StatusInternalServerError, err, nil)
 	}
