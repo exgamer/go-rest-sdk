@@ -34,7 +34,7 @@ func (pager *Pager) init() {
 
 func (pager *Pager) AsMap() map[string]int {
 	pager.init()
-	params := map[string]int{}
+	params := make(map[string]int, 7)
 	params["total_items"] = pager.TotalItems
 	params["page"] = pager.Page
 	params["items_per_page"] = pager.ItemsPerPage
