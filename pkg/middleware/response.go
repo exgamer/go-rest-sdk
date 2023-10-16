@@ -61,8 +61,8 @@ func logResponse(level string, message string, c *gin.Context, config *structure
 	logData := make([]string, 5)
 	logData[0] = time.Now().Format("2006-01-02 15:04:05.345")
 	logData[1] = level
-	logData[2] = "[" + c.Request.Method + ", " + c.Request.RequestURI + ", " + strconv.Itoa(c.Writer.Status()) + "]"
 	logData[3] = "[" + config.Name + ", " + c.GetHeader("X-B3-TraceId") + "]"
+	logData[2] = "[" + c.Request.Method + ", " + c.Request.RequestURI + ", " + strconv.Itoa(c.Writer.Status()) + "]"
 	logData[4] = message
 
 	log.Println(strings.Join(logData, " "))
