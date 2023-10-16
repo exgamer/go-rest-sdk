@@ -59,7 +59,7 @@ func logResponse(level string, message string, c *gin.Context, config *structure
 
 	dateTime := time.Now().Format("2006-01-02 15:04:05.345")
 	serviceData := "[" + config.Name + "," + c.GetHeader("X-B3-TraceId") + "]"
-	requestData := "[" + c.Request.Method + "," + c.Request.RequestURI + ", " + strconv.Itoa(c.Writer.Status()) + "]"
+	requestData := "[" + c.Request.Method + "," + c.Request.RequestURI + "," + strconv.Itoa(c.Writer.Status()) + "]"
 
 	log.Println(dateTime + " " + level + " " + serviceData + requestData + " " + message)
 }
