@@ -11,7 +11,6 @@ import (
 	"net/http"
 	"os"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -58,12 +57,9 @@ func logResponse(level string, message string, c *gin.Context, config *structure
 	log.SetOutput(os.Stdout)
 	log.SetFlags(0)
 
-	logData := make([]string, 5)
-	logData[0] = time.Now().Format("2006-01-02 15:04:05.345")
-	logData[1] = level
-	logData[2] = "[" + config.Name + ", " + c.GetHeader("X-B3-TraceId") + "]"
-	logData[3] = "[" + c.Request.Method + ", " + c.Request.RequestURI + ", " + strconv.Itoa(c.Writer.Status()) + "]"
-	logData[4] = message
+	dateTime := time.Now().Format("2006-01-02 15:04:05.345")
+	serviceData := "[" + config.Name + ", " + c.GetHeader("X-B3-TraceId") + "]"
+	requestData := "[" + c.Request.Method + ", " + c.Request.RequestURI + ", " + strconv.Itoa(c.Writer.Status()) + "]"
 
-	log.Println(strings.Join(logData, " "))
+	log.Println(dateTime + " " + level + " " + serviceData + requestData + " " + message)
 }
