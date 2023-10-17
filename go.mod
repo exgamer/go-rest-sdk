@@ -4,7 +4,6 @@ go 1.18
 
 require (
 	github.com/getsentry/sentry-go v0.24.1
-	github.com/gin-contrib/location v0.0.2
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-errors/errors v1.4.2
 	github.com/go-sql-driver/mysql v1.7.1
@@ -13,6 +12,7 @@ require (
 	github.com/lib/pq v1.10.9
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/mkevac/gopinba v0.0.0-20171206104754-471ad6b3e951
+	github.com/motemen/go-loghttp v0.0.0-20170804080138-974ac5ceac27
 	github.com/spf13/viper v1.16.0
 	github.com/zsais/go-gin-prometheus v0.1.0
 )
@@ -43,6 +43,7 @@ require (
 	github.com/mkevac/monotime v0.0.0-20161125163931-92ece95d55b6 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
+	github.com/motemen/go-nuts v0.0.0-20220604134737-2658d0104f31 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.8 // indirect
 	github.com/prometheus/client_golang v1.16.0 // indirect
 	github.com/prometheus/client_model v0.3.0 // indirect
