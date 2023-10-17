@@ -30,10 +30,6 @@ func RequestHandler(requestData *jStructures.RequestData) gin.HandlerFunc {
 
 		companyIdsStr := c.GetHeader(jConstants.CompanyIdsHeaderName)
 
-		if err != nil {
-			companyIdsStr = ""
-		}
-
 		arr := strings.Split(companyIdsStr, ",")
 
 		companyIds := make([]int, len(arr))
