@@ -33,11 +33,9 @@ func DoHttpRequest(method string, url string, headers map[string]string, body io
 	response, err := client.Do(req)
 
 	r := httpHelperStruct.HttpResponse{
-		Status:     response.Status,
-		StatusCode: response.StatusCode,
-		Url:        url,
-		Method:     method,
-		Headers:    headers,
+		Url:     url,
+		Method:  method,
+		Headers: headers,
 	}
 
 	if err != nil {
@@ -45,6 +43,9 @@ func DoHttpRequest(method string, url string, headers map[string]string, body io
 
 		return r, err
 	}
+
+	r.Status = response.Status
+	r.StatusCode = response.StatusCode
 
 	rBody, bErr := ioutil.ReadAll(response.Body)
 
