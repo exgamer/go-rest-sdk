@@ -24,4 +24,5 @@ func PrintJLog(level string, serviceName string, method string, uri string, stat
 	rData := "[" + method + "," + uri + "," + strconv.Itoa(status) + "]"
 
 	log.Println(dateTime + " " + level + " " + serviceData + rData + " " + message)
+	log.SetFlags(log.Ldate | log.Ltime)
 }
