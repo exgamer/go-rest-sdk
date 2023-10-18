@@ -12,4 +12,5 @@ type RequestData struct {
 	RequestHost      string
 	RequestMethod    string
 	RequestUrl       string
+	ServiceName      string
 }
