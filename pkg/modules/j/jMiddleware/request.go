@@ -47,7 +47,7 @@ func RequestHandler(requestData *jStructures.RequestData) gin.HandlerFunc {
 		requestData.CurrentCompanyId = currentCompanyId
 		requestData.RequestUrl = c.Request.URL.Path
 		requestData.RequestMethod = c.Request.Method
-		requestData.RequestScheme = c.Request.RequestURI
+		requestData.RequestScheme = c.Request.URL.Scheme
 		requestData.RequestHost = c.Request.Host
 
 		c.Next()
