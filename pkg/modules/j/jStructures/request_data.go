@@ -8,4 +8,6 @@ type RequestData struct {
 	CompanyId        int
 	CompanyIds       []int
 	CurrentCompanyId int
+	RequestMethod    string
+	RequestUrl       string
 }

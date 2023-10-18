@@ -45,6 +45,8 @@ func RequestHandler(requestData *jStructures.RequestData) gin.HandlerFunc {
 		requestData.LanguageCode = c.GetHeader(jConstants.LanguageCodeHeaderName)
 		requestData.CompanyId = companyId
 		requestData.CurrentCompanyId = currentCompanyId
+		requestData.RequestUrl = c.Request.URL.Path
+		requestData.RequestMethod = c.Request.Method
 
 		c.Next()
 	}
