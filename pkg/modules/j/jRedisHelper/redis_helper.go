@@ -1,4 +1,4 @@
-package redis
+package jRedisHelper
 
 import (
 	redis2 "github.com/exgamer/go-rest-sdk/pkg/helpers/db/redis"
