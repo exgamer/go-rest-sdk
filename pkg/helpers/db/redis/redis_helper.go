@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func GetPool(config structures.RedisConfig) *redis.Pool {
+func GetPool(config *structures.RedisConfig) *redis.Pool {
 	return &redis.Pool{
 		IdleTimeout:     time.Duration(config.IdleTimeout) * time.Second,
 		MaxConnLifetime: time.Duration(config.MaxConnLifetime) * time.Second,
