@@ -22,7 +22,7 @@ func GetString(pool *redis.Pool, requestData *jStructures.RequestData, key strin
 	return result, err
 }
 
-func SetString(pool *redis.Pool, requestData *jStructures.RequestData, key string, data string, ttl int) (interface{}, error) {
+func SetString(pool *redis.Pool, requestData *jStructures.RequestData, key string, data interface{}, ttl int) (interface{}, error) {
 	messageBuilder := strings.Builder{}
 	reply, err := redis2.SetString(pool, key, data, ttl)
 
