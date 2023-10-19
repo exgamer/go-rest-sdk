@@ -30,7 +30,7 @@ func GetResponseBody(requestData *jStructures.RequestData, method string, url st
 		messageBuilder.WriteString("Url: " + method + " " + url)
 		messageBuilder.WriteString(" Error:" + err.Error())
 
-		jLog.PrintInfoJLog(requestData.ServiceName, requestData.RequestMethod, requestData.RequestHost+requestData.RequestUrl, 0, requestData.RequestId, messageBuilder.String())
+		jLog.PrintErrorJLog(requestData.ServiceName, requestData.RequestMethod, requestData.RequestHost+requestData.RequestUrl, 0, requestData.RequestId, messageBuilder.String())
 
 		return nil, err
 	}
