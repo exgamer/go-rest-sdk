@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -19,10 +20,13 @@ func PrintJLog(level string, serviceName string, method string, uri string, stat
 	log.SetOutput(os.Stdout)
 	log.SetFlags(0)
 
-	dateTime := time.Now().Format("2006-01-02 15:04:05.345")
-	serviceData := "[" + serviceName + "," + requestId + "]"
-	rData := "[" + method + "," + uri + "," + strconv.Itoa(status) + "]"
+	messageBuilder := strings.Builder{}
+	messageBuilder.WriteString(time.Now().Format("2006-01-02 15:04:05.345"))
+	messageBuilder.WriteString(" " + level + " ")
+	messageBuilder.WriteString("[" + serviceName + "," + requestId + "]")
+	messageBuilder.WriteString("[" + method + "," + uri + "," + strconv.Itoa(status) + "]")
+	messageBuilder.WriteString(" " + message)
 
-	log.Println(dateTime + " " + level + " " + serviceData + rData + " " + message)
+	log.Println(messageBuilder.String())
 	log.SetFlags(log.Ldate | log.Ltime)
 }
