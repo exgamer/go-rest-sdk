@@ -15,6 +15,7 @@ require (
 	github.com/mkevac/gopinba v0.0.0-20171206104754-471ad6b3e951
 	github.com/motemen/go-loghttp v0.0.0-20170804080138-974ac5ceac27
 	github.com/spf13/viper v1.16.0
+	github.com/vearne/gin-timeout v0.1.7
 	github.com/zsais/go-gin-prometheus v0.1.0
 )
 

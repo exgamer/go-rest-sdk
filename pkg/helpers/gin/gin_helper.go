@@ -7,8 +7,10 @@ import (
 	sentrygin "github.com/getsentry/sentry-go/gin"
 	"github.com/gin-gonic/gin"
 	"github.com/go-errors/errors"
+	timeout "github.com/vearne/gin-timeout"
 	ginprometheus "github.com/zsais/go-gin-prometheus"
 	"net/http"
+	"time"
 )
 
 func InitRouter(appConfig *structures.AppConfig) *gin.Engine {
@@ -39,6 +41,7 @@ func InitRouter(appConfig *structures.AppConfig) *gin.Engine {
 
 	router.Use(gin.Logger())
 	router.Use(gin.CustomRecovery(ErrorHandler))
+	router.Use(timeout.Timeout(timeout.WithTimeout(time.Duration(appConfig.HandlerTimeout) * time.Second)))
 
 	return router
 }

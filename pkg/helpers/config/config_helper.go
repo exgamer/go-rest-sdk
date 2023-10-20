@@ -12,7 +12,7 @@ import (
 )
 
 func InitBaseConfig() (*structures.AppConfig, *structures.DbConfig, error) {
-	appConfigInterface, err := InitConfig(&structures.AppConfig{})
+	appConfigInterface, err := InitConfig(&structures.AppConfig{HandlerTimeout: 30})
 
 	if err != nil {
 		log.Fatalf("Some error occurred. Err: %s", err)
