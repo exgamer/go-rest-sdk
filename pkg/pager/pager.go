@@ -3,13 +3,13 @@ package pager
 import "math"
 
 type Pager struct {
-	TotalItems       int
-	Page             int
-	ItemsPerPage     int
-	From             int
-	To               int
-	LastPage         int
-	CurrentPageItems int
+	TotalItems       int `json:"total"`
+	Page             int `json:"current_page"`
+	ItemsPerPage     int `json:"per_page"`
+	From             int `json:"from"`
+	To               int `json:"to"`
+	LastPage         int `json:"last_page"`
+	CurrentPageItems int `json:"current_page_items"`
 }
 
 func (pager *Pager) init() {
