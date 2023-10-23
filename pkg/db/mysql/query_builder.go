@@ -228,47 +228,49 @@ func (queryBuilder *QueryBuilder) MakeSelectSql() string {
 
 // makeSelectSql - returns full select sql string
 func (queryBuilder *QueryBuilder) makeSelectSql(countSelect bool, addOrder bool) string {
-	sqlString := "SELECT "
+	builder := strings.Builder{}
+	builder.WriteString("SELECT ")
 
 	if queryBuilder.CalcRows == true {
-		sqlString += " SQL_CALC_FOUND_ROWS "
+		builder.WriteString(" SQL_CALC_FOUND_ROWS ")
 	}
 
 	if countSelect == false {
 		if len(queryBuilder.SelectArray) > 0 {
-			sqlString += strings.Join(queryBuilder.SelectArray, ", ")
+			builder.WriteString(strings.Join(queryBuilder.SelectArray, ", "))
 		} else {
-			sqlString += "*"
+			builder.WriteString("*")
 		}
 	} else {
-		sqlString += "count(*)"
+		builder.WriteString("count(*)")
 	}
 
-	sqlString += " FROM " + queryBuilder.TableName
+	builder.WriteString(" FROM " + queryBuilder.TableName)
 
 	if len(queryBuilder.TableAliasName) > 0 {
-		sqlString += " " + queryBuilder.TableAliasName
+		builder.WriteString(" " + queryBuilder.TableAliasName)
 	}
 
-	sqlString += " " + queryBuilder.makeJoinSql()
-	sqlString += " " + queryBuilder.makeWhereSql()
+	builder.WriteString(" " + queryBuilder.makeJoinSql())
+	builder.WriteString(" " + queryBuilder.makeWhereSql())
 
 	if len(queryBuilder.Group) > 0 {
-		sqlString += " GROUP BY " + queryBuilder.Group
+		builder.WriteString(" GROUP BY " + queryBuilder.Group)
 	}
 
 	if len(queryBuilder.Order) > 0 && addOrder == true {
-		sqlString += " ORDER BY " + strings.Join(queryBuilder.Order, ",")
+		builder.WriteString(" ORDER BY " + strings.Join(queryBuilder.Order, ","))
 	}
 
 	if queryBuilder.LimitCount > 0 {
-		sqlString += " LIMIT " + strconv.Itoa(queryBuilder.LimitCount)
+		builder.WriteString(" LIMIT " + strconv.Itoa(queryBuilder.LimitCount))
 	}
 
 	if queryBuilder.OffsetCount > 0 {
-		sqlString += " OFFSET " + strconv.Itoa(queryBuilder.OffsetCount)
+		builder.WriteString(" OFFSET " + strconv.Itoa(queryBuilder.OffsetCount))
 	}
 
+	sqlString := builder.String()
 	log.Println("MakeSelectSql: " + sqlString)
 	fmt.Print(queryBuilder.Params)
 
@@ -465,8 +467,12 @@ func (queryBuilder *QueryBuilder) MakeUpdateSql() string {
 		i++
 	}
 
-	sqlString := "UPDATE " + queryBuilder.TableName + " SET " + strings.Join(cols, ",") + " "
-	sqlString += queryBuilder.makeWhereSql()
+	builder := strings.Builder{}
+	builder.WriteString("UPDATE " + queryBuilder.TableName + " SET " + strings.Join(cols, ",") + " ")
+	builder.WriteString(queryBuilder.makeWhereSql())
+
+	sqlString := builder.String()
+
 	log.Println("MakeUpdateSql: " + sqlString)
 
 	return sqlString
@@ -474,8 +480,12 @@ func (queryBuilder *QueryBuilder) MakeUpdateSql() string {
 
 // MakeDeleteSql - returns delete sql string
 func (queryBuilder *QueryBuilder) MakeDeleteSql() string {
-	sqlString := "DELETE FROM " + queryBuilder.TableName + " "
-	sqlString += queryBuilder.makeWhereSql()
+	builder := strings.Builder{}
+	builder.WriteString("DELETE FROM " + queryBuilder.TableName + " ")
+	builder.WriteString(queryBuilder.makeWhereSql())
+
+	sqlString := builder.String()
+
 	log.Println("MakeDeleteSql: " + sqlString)
 
 	return sqlString
