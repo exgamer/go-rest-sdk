@@ -38,7 +38,7 @@ func NewPostgresQueryBuilder() *QueryBuilder {
 	}
 }
 
-//QueryBuilder - query builder
+// QueryBuilder - query builder
 type QueryBuilder struct {
 	Db               *sql.DB
 	TableName        string
@@ -69,7 +69,7 @@ type JoinCondition struct {
 	On    string
 }
 
-//SetDb - set sql.DB connection (for make query)
+// SetDb - set sql.DB connection (for make query)
 func (queryBuilder *QueryBuilder) SetDb(db *sql.DB) *QueryBuilder {
 	queryBuilder.Db = db
 
@@ -82,9 +82,9 @@ func (queryBuilder *QueryBuilder) SetDbType(dbType string) *QueryBuilder {
 	return queryBuilder
 }
 
-func (queryBuilder *QueryBuilder) getPlaceholder(i int) string {
+func (queryBuilder *QueryBuilder) getPlaceholder() string {
 	if queryBuilder.DbType == "postgres" {
-		index := len(queryBuilder.Params) + 1 + i
+		index := len(queryBuilder.Params) + 1
 
 		return "$" + strconv.Itoa(index)
 	}
@@ -92,14 +92,14 @@ func (queryBuilder *QueryBuilder) getPlaceholder(i int) string {
 	return "?"
 }
 
-//SetEntity - set entity to query
+// SetEntity - set entity to query
 func (queryBuilder *QueryBuilder) SetEntity(entity entity.Entity) *QueryBuilder {
 	queryBuilder.TableName = entity.GetTable()
 
 	return queryBuilder
 }
 
-//SetData - set data to query
+// SetData - set data to query
 func (queryBuilder *QueryBuilder) SetData(data map[string]any) *QueryBuilder {
 	queryBuilder.Data = data
 	fmt.Println(data)
@@ -107,7 +107,7 @@ func (queryBuilder *QueryBuilder) SetData(data map[string]any) *QueryBuilder {
 	return queryBuilder
 }
 
-//SetFormData - set data to query (for insert/update)
+// SetFormData - set data to query (for insert/update)
 func (queryBuilder *QueryBuilder) SetFormData(form form.Form) *QueryBuilder {
 	queryBuilder.Data = form.AsMap()
 
@@ -120,21 +120,21 @@ func (queryBuilder *QueryBuilder) SetQueryTimeout(timeout time.Duration) *QueryB
 	return queryBuilder
 }
 
-//Table - set table name
+// Table - set table name
 func (queryBuilder *QueryBuilder) Table(table string) *QueryBuilder {
 	queryBuilder.TableName = table
 
 	return queryBuilder
 }
 
-//Select - set select fields
+// Select - set select fields
 func (queryBuilder *QueryBuilder) Select(fields ...string) *QueryBuilder {
 	queryBuilder.SelectArray = fields
 
 	return queryBuilder
 }
 
-//TableAlias - set from table alias
+// TableAlias - set from table alias
 func (queryBuilder *QueryBuilder) TableAlias(tableAlias string) *QueryBuilder {
 	queryBuilder.TableAliasName = tableAlias
 
@@ -147,7 +147,7 @@ func (queryBuilder *QueryBuilder) CalculateRows() *QueryBuilder {
 	return queryBuilder
 }
 
-//SetLimitOffsetByPage - set limit and offset to query by page
+// SetLimitOffsetByPage - set limit and offset to query by page
 func (queryBuilder *QueryBuilder) SetLimitOffsetByPage(page int, perPage int) *QueryBuilder {
 	var limit = 30
 	var offset = 0
@@ -166,47 +166,47 @@ func (queryBuilder *QueryBuilder) SetLimitOffsetByPage(page int, perPage int) *Q
 	return queryBuilder
 }
 
-//Limit - set limit to query
+// Limit - set limit to query
 func (queryBuilder *QueryBuilder) Limit(limit int) *QueryBuilder {
 	queryBuilder.LimitCount = limit
 
 	return queryBuilder
 }
 
-//Offset - set offset to query
+// Offset - set offset to query
 func (queryBuilder *QueryBuilder) Offset(offset int) *QueryBuilder {
 	queryBuilder.OffsetCount = offset
 
 	return queryBuilder
 }
 
-//OrderByAsc - add order by asc
+// OrderByAsc - add order by asc
 func (queryBuilder *QueryBuilder) OrderByAsc(orderBy string) *QueryBuilder {
 
 	return queryBuilder.orderBy(orderBy, "ASC")
 }
 
-//OrderByDesc - add order by desc
+// OrderByDesc - add order by desc
 func (queryBuilder *QueryBuilder) OrderByDesc(orderBy string) *QueryBuilder {
 
 	return queryBuilder.orderBy(orderBy, "DESC")
 }
 
-//orderBy - add order by
+// orderBy - add order by
 func (queryBuilder *QueryBuilder) orderBy(orderBy string, sort string) *QueryBuilder {
 	queryBuilder.Order = append(queryBuilder.Order, orderBy+" "+sort)
 
 	return queryBuilder
 }
 
-//GroupBy - add group by
+// GroupBy - add group by
 func (queryBuilder *QueryBuilder) GroupBy(groupBy string) *QueryBuilder {
 	queryBuilder.Group = groupBy
 
 	return queryBuilder
 }
 
-//GetParams - returns query params
+// GetParams - returns query params
 func (queryBuilder *QueryBuilder) GetParams() []any {
 
 	return queryBuilder.Params
@@ -216,17 +216,17 @@ func (queryBuilder *QueryBuilder) MakeFoundRowsSql() string {
 	return "SELECT FOUND_ROWS()"
 }
 
-//MakeCountSelectSql - returns full count select sql string
+// MakeCountSelectSql - returns full count select sql string
 func (queryBuilder *QueryBuilder) MakeCountSelectSql() string {
 	return queryBuilder.makeSelectSql(true, false)
 }
 
-//MakeSelectSql - returns full select sql string
+// MakeSelectSql - returns full select sql string
 func (queryBuilder *QueryBuilder) MakeSelectSql() string {
 	return queryBuilder.makeSelectSql(false, true)
 }
 
-//makeSelectSql - returns full select sql string
+// makeSelectSql - returns full select sql string
 func (queryBuilder *QueryBuilder) makeSelectSql(countSelect bool, addOrder bool) string {
 	sqlString := "SELECT "
 
@@ -275,42 +275,42 @@ func (queryBuilder *QueryBuilder) makeSelectSql(countSelect bool, addOrder bool)
 	return sqlString
 }
 
-//Join - add join condition
+// Join - add join condition
 func (queryBuilder *QueryBuilder) Join(table string, first string, second string, params ...string) *QueryBuilder {
 	queryBuilder.join(table, first+"="+second, "JOIN", params...)
 
 	return queryBuilder
 }
 
-//OuterJoin - add outer join condition
+// OuterJoin - add outer join condition
 func (queryBuilder *QueryBuilder) OuterJoin(table string, first string, second string, params ...string) *QueryBuilder {
 	queryBuilder.join(table, first+"="+second, "OUTER JOIN", params...)
 
 	return queryBuilder
 }
 
-//InnerJoin - add inner join condition
+// InnerJoin - add inner join condition
 func (queryBuilder *QueryBuilder) InnerJoin(table string, first string, second string, params ...string) *QueryBuilder {
 	queryBuilder.join(table, first+"="+second, "INNER JOIN", params...)
 
 	return queryBuilder
 }
 
-//RightJoin - add right join condition
+// RightJoin - add right join condition
 func (queryBuilder *QueryBuilder) RightJoin(table string, first string, second string, params ...string) *QueryBuilder {
 	queryBuilder.join(table, first+"="+second, "RIGHT JOIN", params...)
 
 	return queryBuilder
 }
 
-//LeftJoin - add left join condition
+// LeftJoin - add left join condition
 func (queryBuilder *QueryBuilder) LeftJoin(table string, first string, second string, params ...string) *QueryBuilder {
 	queryBuilder.join(table, first+"="+second, "LEFT JOIN", params...)
 
 	return queryBuilder
 }
 
-//join - add join condition by string condition
+// join - add join condition by string condition
 func (queryBuilder *QueryBuilder) join(table string, on string, joinType string, params ...string) {
 	join := JoinCondition{Table: table, On: on, Type: joinType}
 	queryBuilder.JoinCondition = append(queryBuilder.JoinCondition, join)
@@ -320,7 +320,7 @@ func (queryBuilder *QueryBuilder) join(table string, on string, joinType string,
 	}
 }
 
-//makeJoinSql - returns join part of sql string
+// makeJoinSql - returns join part of sql string
 func (queryBuilder *QueryBuilder) makeJoinSql() string {
 	sqlString := ""
 
@@ -337,45 +337,45 @@ func (queryBuilder *QueryBuilder) makeJoinSql() string {
 	return strings.Join(joinArray, " ")
 }
 
-//OrWhere - adds or where condition
+// OrWhere - adds or where condition
 func (queryBuilder *QueryBuilder) OrWhere(field string, value string) *QueryBuilder {
-	queryBuilder.OrWhereByCondition(field+"="+queryBuilder.getPlaceholder(0), value)
+	queryBuilder.OrWhereByCondition(field+"="+queryBuilder.getPlaceholder(), value)
 
 	return queryBuilder
 }
 
-//OrWhereByCondition - adds or where condition  by string
+// OrWhereByCondition - adds or where condition  by string
 func (queryBuilder *QueryBuilder) OrWhereByCondition(condition string, params ...string) *QueryBuilder {
 	queryBuilder.WhereByCondition(condition, "OR", params...)
 
 	return queryBuilder
 }
 
-//AndWhere - adds and where condition
+// AndWhere - adds and where condition
 func (queryBuilder *QueryBuilder) AndWhere(field string, value string) *QueryBuilder {
-	queryBuilder.AndWhereByCondition(field+"="+queryBuilder.getPlaceholder(0), value)
+	queryBuilder.AndWhereByCondition(field+"="+queryBuilder.getPlaceholder(), value)
 
 	return queryBuilder
 }
 
-//AndWhereByCondition - adds where condition by string
+// AndWhereByCondition - adds where condition by string
 func (queryBuilder *QueryBuilder) AndWhereByCondition(condition string, params ...string) *QueryBuilder {
 	queryBuilder.WhereByCondition(condition, "AND", params...)
 
 	return queryBuilder
 }
 
-//AndWhereIn - adds and in condition
+// AndWhereIn - adds and in condition
 func (queryBuilder *QueryBuilder) AndWhereIn(field string, params []string) *QueryBuilder {
 	return queryBuilder.WhereIn(field, params, "AND")
 }
 
-//WhereIn - adds in condition
+// WhereIn - adds in condition
 func (queryBuilder *QueryBuilder) WhereIn(field string, params []string, operator string) *QueryBuilder {
 	sParams := make([]string, len(params))
 
 	for i := 0; i < len(params); i++ {
-		sParams[i] = queryBuilder.getPlaceholder(i)
+		sParams[i] = queryBuilder.getPlaceholder()
 		queryBuilder.Params = append(queryBuilder.Params, params[i])
 	}
 
@@ -386,7 +386,7 @@ func (queryBuilder *QueryBuilder) WhereIn(field string, params []string, operato
 	return queryBuilder
 }
 
-//WhereByCondition - adds string condition
+// WhereByCondition - adds string condition
 func (queryBuilder *QueryBuilder) WhereByCondition(condition string, operator string, params ...string) *QueryBuilder {
 	where := WhereCondition{Condition: condition, Operator: operator}
 	queryBuilder.WhereCondition = append(queryBuilder.WhereCondition, where)
@@ -399,7 +399,7 @@ func (queryBuilder *QueryBuilder) WhereByCondition(condition string, operator st
 	return queryBuilder
 }
 
-//makeWhereSql - returns where part of sql string
+// makeWhereSql - returns where part of sql string
 func (queryBuilder *QueryBuilder) makeWhereSql() string {
 	sqlString := ""
 
@@ -424,7 +424,7 @@ func (queryBuilder *QueryBuilder) makeWhereSql() string {
 	return " WHERE " + strings.Join(whereArray, " ")
 }
 
-//MakeInsertSql - returns insert sql string
+// MakeInsertSql - returns insert sql string
 func (queryBuilder *QueryBuilder) MakeInsertSql() string {
 	cols := make([]string, len(queryBuilder.Data))
 	vals := make([]string, len(queryBuilder.Data))
@@ -449,7 +449,7 @@ func (queryBuilder *QueryBuilder) MakeInsertSql() string {
 	return sqlString
 }
 
-//MakeUpdateSql - returns update sql string
+// MakeUpdateSql - returns update sql string
 func (queryBuilder *QueryBuilder) MakeUpdateSql() string {
 	cols := make([]string, len(queryBuilder.Data))
 
@@ -472,7 +472,7 @@ func (queryBuilder *QueryBuilder) MakeUpdateSql() string {
 	return sqlString
 }
 
-//MakeDeleteSql - returns delete sql string
+// MakeDeleteSql - returns delete sql string
 func (queryBuilder *QueryBuilder) MakeDeleteSql() string {
 	sqlString := "DELETE FROM " + queryBuilder.TableName + " "
 	sqlString += queryBuilder.makeWhereSql()
@@ -481,21 +481,21 @@ func (queryBuilder *QueryBuilder) MakeDeleteSql() string {
 	return sqlString
 }
 
-//All - returns all query result
+// All - returns all query result
 func (queryBuilder *QueryBuilder) All() (*[]map[string]interface{}, *exception.AppException) {
 	res, _, appException := queryBuilder.paginate(false, 0, 1000)
 
 	return res, appException
 }
 
-//One - returns one query result
+// One - returns one query result
 func (queryBuilder *QueryBuilder) One() (*[]map[string]interface{}, *exception.AppException) {
 	res, _, appException := queryBuilder.paginate(false, 0, 1)
 
 	return res, appException
 }
 
-//Paginate - returns paginated query result
+// Paginate - returns paginated query result
 func (queryBuilder *QueryBuilder) Paginate(page int, perPage int) (*[]map[string]interface{}, *paginator.Pager, *exception.AppException) {
 	return queryBuilder.paginate(true, page, perPage)
 }
