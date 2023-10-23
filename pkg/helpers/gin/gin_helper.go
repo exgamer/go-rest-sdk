@@ -40,8 +40,8 @@ func InitRouter(appConfig *structures.AppConfig) *gin.Engine {
 	router.Use(sentrygin.New(sentrygin.Options{}))
 
 	router.Use(gin.Logger())
-	router.Use(gin.CustomRecovery(ErrorHandler))
 	router.Use(timeout.Timeout(timeout.WithTimeout(time.Duration(appConfig.HandlerTimeout) * time.Second)))
+	router.Use(gin.CustomRecovery(ErrorHandler))
 
 	return router
 }
