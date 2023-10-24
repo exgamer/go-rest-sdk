@@ -5,7 +5,6 @@ import (
 	"github.com/exgamer/go-rest-sdk/pkg/logger"
 	"github.com/motemen/go-loghttp"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"time"
 )
@@ -47,17 +46,17 @@ func DoHttpRequest(method string, url string, headers map[string]string, body io
 	r.Status = response.Status
 	r.StatusCode = response.StatusCode
 
-	rBody, bErr := ioutil.ReadAll(response.Body)
+	rBody, bErr := io.ReadAll(response.Body)
 
 	if bErr != nil {
 		logger.LogError(bErr)
 
-		return r, err
+		return r, bErr
 	}
 
 	r.Body = rBody
 
 	defer response.Body.Close()
 
-	return r, bErr
+	return r, nil
 }

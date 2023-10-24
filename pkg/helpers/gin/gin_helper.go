@@ -49,7 +49,7 @@ func InitRouter(appConfig *structures.AppConfig) *gin.Engine {
 func ErrorHandler(c *gin.Context, err any) {
 	goErr := errors.Wrap(err, 2)
 
-	details := make([]string, 0)
+	details := make([]string, len(goErr.StackFrames()))
 
 	for _, frame := range goErr.StackFrames() {
 		details = append(details, frame.String())
