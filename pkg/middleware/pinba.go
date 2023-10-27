@@ -30,11 +30,15 @@ func PinbaHandler(config *structures.AppConfig) gin.HandlerFunc {
 		req.ScriptName = c.Request.RequestURI
 		req.RequestCount = 1
 
+		req.Tags = map[string]string{
+			"method": c.Request.Method,
+			"type":   "web",
+		}
+
 		c.Next()
 
 		req.Status = uint32(c.Writer.Status())
 		req.RequestTime = time.Since(start)
-
 		err = pc.SendRequest(&req)
 
 		if err != nil {
