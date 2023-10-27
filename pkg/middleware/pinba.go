@@ -32,7 +32,6 @@ func PinbaHandler(config *structures.AppConfig) gin.HandlerFunc {
 
 		req.Tags = map[string]string{
 			"method": c.Request.Method,
-			"type":   "web",
 		}
 
 		c.Next()
