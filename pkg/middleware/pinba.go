@@ -27,7 +27,7 @@ func PinbaHandler(config *structures.AppConfig) gin.HandlerFunc {
 
 		req.Hostname = config.HostName
 		req.ServerName = config.AppEnv
-		req.ScriptName = c.Request.RequestURI
+		req.ScriptName = c.FullPath()
 		req.Schema = "http"
 		req.RequestCount = 1
 
