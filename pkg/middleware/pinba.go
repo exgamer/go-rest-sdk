@@ -26,11 +26,13 @@ func PinbaHandler(config *structures.AppConfig) gin.HandlerFunc {
 		req := gopinba.Request{}
 
 		req.Hostname = config.HostName
-		req.ServerName = config.Name
+		req.ServerName = config.AppEnv
 		req.ScriptName = c.Request.RequestURI
+		req.Schema = "http"
 		req.RequestCount = 1
 
 		req.Tags = map[string]string{
+			"type":   c.Request.Method,
 			"method": c.Request.Method,
 		}
 
@@ -38,6 +40,7 @@ func PinbaHandler(config *structures.AppConfig) gin.HandlerFunc {
 
 		req.Status = uint32(c.Writer.Status())
 		req.RequestTime = time.Since(start)
+
 		err = pc.SendRequest(&req)
 
 		if err != nil {
