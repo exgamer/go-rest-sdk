@@ -618,3 +618,16 @@ func (queryBuilder *QueryBuilder) Insert() (int64, *exception.AppException) {
 
 	return lastId, nil
 }
+
+func (queryBuilder *QueryBuilder) Update() (bool, *exception.AppException) {
+	ctx, cancel := context.WithTimeout(context.Background(), queryBuilder.timeout*time.Second)
+	defer cancel()
+
+	_, err := queryBuilder.Db.ExecContext(ctx, queryBuilder.MakeUpdateSql(), queryBuilder.GetParams()...)
+
+	if err != nil {
+		return false, exception.NewAppException(http.StatusInternalServerError, err, nil)
+	}
+
+	return true, nil
+}
