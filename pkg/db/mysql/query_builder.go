@@ -631,3 +631,16 @@ func (queryBuilder *QueryBuilder) Update() (bool, *exception.AppException) {
 
 	return true, nil
 }
+
+func (queryBuilder *QueryBuilder) Delete() *exception.AppException {
+	ctx, cancel := context.WithTimeout(context.Background(), queryBuilder.timeout*time.Second)
+	defer cancel()
+
+	_, err := queryBuilder.Db.ExecContext(ctx, queryBuilder.MakeDeleteSql(), queryBuilder.GetParams()...)
+
+	if err != nil {
+		return exception.NewAppException(http.StatusInternalServerError, err, nil)
+	}
+
+	return nil
+}
