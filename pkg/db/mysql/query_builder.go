@@ -67,6 +67,7 @@ type JoinCondition struct {
 	Type  string
 	Table string
 	On    string
+	Where string
 }
 
 // SetDb - set sql.DB connection (for make query)
@@ -322,6 +323,39 @@ func (queryBuilder *QueryBuilder) join(table string, on string, joinType string,
 	}
 }
 
+func (queryBuilder *QueryBuilder) OuterJoinWithCondition(table string, first string, second string, condition string, params ...string) *QueryBuilder {
+	queryBuilder.joinWithCondition(table, first+"="+second, "OUTER JOIN", condition, params...)
+
+	return queryBuilder
+}
+
+func (queryBuilder *QueryBuilder) InnerJoinWithCondition(table string, first string, second string, condition string, params ...string) *QueryBuilder {
+	queryBuilder.joinWithCondition(table, first+"="+second, "INNER JOIN", condition, params...)
+
+	return queryBuilder
+}
+
+func (queryBuilder *QueryBuilder) RightJoinWithCondition(table string, first string, second string, condition string, params ...string) *QueryBuilder {
+	queryBuilder.joinWithCondition(table, first+"="+second, "RIGHT JOIN", condition, params...)
+
+	return queryBuilder
+}
+
+func (queryBuilder *QueryBuilder) LeftJoinWithCondition(table string, first string, second string, condition string, params ...string) *QueryBuilder {
+	queryBuilder.joinWithCondition(table, first+"="+second, "LEFT JOIN", condition, params...)
+
+	return queryBuilder
+}
+
+func (queryBuilder *QueryBuilder) joinWithCondition(table string, on string, joinType string, condition string, params ...string) {
+	join := JoinCondition{Table: table, On: on, Type: joinType, Where: condition}
+	queryBuilder.JoinCondition = append(queryBuilder.JoinCondition, join)
+
+	for _, p := range params {
+		queryBuilder.Params = append(queryBuilder.Params, p)
+	}
+}
+
 // makeJoinSql - returns join part of sql string
 func (queryBuilder *QueryBuilder) makeJoinSql() string {
 	sqlString := ""
@@ -333,7 +367,7 @@ func (queryBuilder *QueryBuilder) makeJoinSql() string {
 	joinArray := make([]string, len(queryBuilder.JoinCondition))
 
 	for i := 0; i < len(queryBuilder.JoinCondition); i++ {
-		joinArray[i] = queryBuilder.JoinCondition[i].Type + " " + queryBuilder.JoinCondition[i].Table + " ON " + queryBuilder.JoinCondition[i].On
+		joinArray[i] = queryBuilder.JoinCondition[i].Type + " " + queryBuilder.JoinCondition[i].Table + " ON " + queryBuilder.JoinCondition[i].On + " " + queryBuilder.JoinCondition[i].Where
 	}
 
 	return strings.Join(joinArray, " ")
