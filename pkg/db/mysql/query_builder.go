@@ -678,3 +678,16 @@ func (queryBuilder *QueryBuilder) Delete() *exception.AppException {
 
 	return nil
 }
+
+func (queryBuilder *QueryBuilder) Exec(sql string, params ...any) (bool, *exception.AppException) {
+	ctx, cancel := context.WithTimeout(context.Background(), queryBuilder.timeout*time.Second)
+	defer cancel()
+
+	_, err := queryBuilder.Db.ExecContext(ctx, sql, params...)
+
+	if err != nil {
+		return false, exception.NewAppException(http.StatusInternalServerError, err, nil)
+	}
+
+	return true, nil
+}
