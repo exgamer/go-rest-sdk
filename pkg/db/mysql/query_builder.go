@@ -255,7 +255,7 @@ func (queryBuilder *QueryBuilder) makeSelectSql(countSelect bool, addOrder bool)
 	builder.WriteString(" " + queryBuilder.makeJoinSql())
 	builder.WriteString(" " + queryBuilder.makeWhereSql())
 
-	if len(queryBuilder.Group) > 0 {
+	if len(queryBuilder.Group) > 0 && countSelect == false {
 		builder.WriteString(" GROUP BY " + queryBuilder.Group)
 	}
 
