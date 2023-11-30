@@ -279,42 +279,42 @@ func (queryBuilder *QueryBuilder) makeSelectSql(countSelect bool, addOrder bool)
 }
 
 // Join - add join condition
-func (queryBuilder *QueryBuilder) Join(table string, first string, second string, params ...string) *QueryBuilder {
+func (queryBuilder *QueryBuilder) Join(table string, first string, second string, params ...any) *QueryBuilder {
 	queryBuilder.join(table, first+"="+second, "JOIN", params...)
 
 	return queryBuilder
 }
 
 // OuterJoin - add outer join condition
-func (queryBuilder *QueryBuilder) OuterJoin(table string, first string, second string, params ...string) *QueryBuilder {
+func (queryBuilder *QueryBuilder) OuterJoin(table string, first string, second string, params ...any) *QueryBuilder {
 	queryBuilder.join(table, first+"="+second, "OUTER JOIN", params...)
 
 	return queryBuilder
 }
 
 // InnerJoin - add inner join condition
-func (queryBuilder *QueryBuilder) InnerJoin(table string, first string, second string, params ...string) *QueryBuilder {
+func (queryBuilder *QueryBuilder) InnerJoin(table string, first string, second string, params ...any) *QueryBuilder {
 	queryBuilder.join(table, first+"="+second, "INNER JOIN", params...)
 
 	return queryBuilder
 }
 
 // RightJoin - add right join condition
-func (queryBuilder *QueryBuilder) RightJoin(table string, first string, second string, params ...string) *QueryBuilder {
+func (queryBuilder *QueryBuilder) RightJoin(table string, first string, second string, params ...any) *QueryBuilder {
 	queryBuilder.join(table, first+"="+second, "RIGHT JOIN", params...)
 
 	return queryBuilder
 }
 
 // LeftJoin - add left join condition
-func (queryBuilder *QueryBuilder) LeftJoin(table string, first string, second string, params ...string) *QueryBuilder {
+func (queryBuilder *QueryBuilder) LeftJoin(table string, first string, second string, params ...any) *QueryBuilder {
 	queryBuilder.join(table, first+"="+second, "LEFT JOIN", params...)
 
 	return queryBuilder
 }
 
 // join - add join condition by string condition
-func (queryBuilder *QueryBuilder) join(table string, on string, joinType string, params ...string) {
+func (queryBuilder *QueryBuilder) join(table string, on string, joinType string, params ...any) {
 	join := JoinCondition{Table: table, On: on, Type: joinType}
 	queryBuilder.JoinCondition = append(queryBuilder.JoinCondition, join)
 
@@ -323,31 +323,31 @@ func (queryBuilder *QueryBuilder) join(table string, on string, joinType string,
 	}
 }
 
-func (queryBuilder *QueryBuilder) OuterJoinWithCondition(table string, first string, second string, condition string, params ...string) *QueryBuilder {
+func (queryBuilder *QueryBuilder) OuterJoinWithCondition(table string, first string, second string, condition string, params ...any) *QueryBuilder {
 	queryBuilder.joinWithCondition(table, first+"="+second, "OUTER JOIN", condition, params...)
 
 	return queryBuilder
 }
 
-func (queryBuilder *QueryBuilder) InnerJoinWithCondition(table string, first string, second string, condition string, params ...string) *QueryBuilder {
+func (queryBuilder *QueryBuilder) InnerJoinWithCondition(table string, first string, second string, condition string, params ...any) *QueryBuilder {
 	queryBuilder.joinWithCondition(table, first+"="+second, "INNER JOIN", condition, params...)
 
 	return queryBuilder
 }
 
-func (queryBuilder *QueryBuilder) RightJoinWithCondition(table string, first string, second string, condition string, params ...string) *QueryBuilder {
+func (queryBuilder *QueryBuilder) RightJoinWithCondition(table string, first string, second string, condition string, params ...any) *QueryBuilder {
 	queryBuilder.joinWithCondition(table, first+"="+second, "RIGHT JOIN", condition, params...)
 
 	return queryBuilder
 }
 
-func (queryBuilder *QueryBuilder) LeftJoinWithCondition(table string, first string, second string, condition string, params ...string) *QueryBuilder {
+func (queryBuilder *QueryBuilder) LeftJoinWithCondition(table string, first string, second string, condition string, params ...any) *QueryBuilder {
 	queryBuilder.joinWithCondition(table, first+"="+second, "LEFT JOIN", condition, params...)
 
 	return queryBuilder
 }
 
-func (queryBuilder *QueryBuilder) joinWithCondition(table string, on string, joinType string, condition string, params ...string) {
+func (queryBuilder *QueryBuilder) joinWithCondition(table string, on string, joinType string, condition string, params ...any) {
 	join := JoinCondition{Table: table, On: on, Type: joinType, Where: condition}
 	queryBuilder.JoinCondition = append(queryBuilder.JoinCondition, join)
 
@@ -374,40 +374,40 @@ func (queryBuilder *QueryBuilder) makeJoinSql() string {
 }
 
 // OrWhere - adds or where condition
-func (queryBuilder *QueryBuilder) OrWhere(field string, value string) *QueryBuilder {
+func (queryBuilder *QueryBuilder) OrWhere(field string, value any) *QueryBuilder {
 	queryBuilder.OrWhereByCondition(field+"="+queryBuilder.getPlaceholder(), value)
 
 	return queryBuilder
 }
 
 // OrWhereByCondition - adds or where condition  by string
-func (queryBuilder *QueryBuilder) OrWhereByCondition(condition string, params ...string) *QueryBuilder {
+func (queryBuilder *QueryBuilder) OrWhereByCondition(condition string, params ...any) *QueryBuilder {
 	queryBuilder.WhereByCondition(condition, "OR", params...)
 
 	return queryBuilder
 }
 
 // AndWhere - adds and where condition
-func (queryBuilder *QueryBuilder) AndWhere(field string, value string) *QueryBuilder {
+func (queryBuilder *QueryBuilder) AndWhere(field string, value any) *QueryBuilder {
 	queryBuilder.AndWhereByCondition(field+"="+queryBuilder.getPlaceholder(), value)
 
 	return queryBuilder
 }
 
 // AndWhereByCondition - adds where condition by string
-func (queryBuilder *QueryBuilder) AndWhereByCondition(condition string, params ...string) *QueryBuilder {
+func (queryBuilder *QueryBuilder) AndWhereByCondition(condition string, params ...any) *QueryBuilder {
 	queryBuilder.WhereByCondition(condition, "AND", params...)
 
 	return queryBuilder
 }
 
 // AndWhereIn - adds and in condition
-func (queryBuilder *QueryBuilder) AndWhereIn(field string, params []string) *QueryBuilder {
+func (queryBuilder *QueryBuilder) AndWhereIn(field string, params []any) *QueryBuilder {
 	return queryBuilder.WhereIn(field, params, "AND")
 }
 
 // WhereIn - adds in condition
-func (queryBuilder *QueryBuilder) WhereIn(field string, params []string, operator string) *QueryBuilder {
+func (queryBuilder *QueryBuilder) WhereIn(field string, params []any, operator string) *QueryBuilder {
 	sParams := make([]string, len(params))
 
 	for i := 0; i < len(params); i++ {
@@ -423,7 +423,7 @@ func (queryBuilder *QueryBuilder) WhereIn(field string, params []string, operato
 }
 
 // WhereByCondition - adds string condition
-func (queryBuilder *QueryBuilder) WhereByCondition(condition string, operator string, params ...string) *QueryBuilder {
+func (queryBuilder *QueryBuilder) WhereByCondition(condition string, operator string, params ...any) *QueryBuilder {
 	where := WhereCondition{Condition: condition, Operator: operator}
 	queryBuilder.WhereCondition = append(queryBuilder.WhereCondition, where)
 	fmt.Print(params)
