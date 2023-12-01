@@ -571,7 +571,15 @@ func (queryBuilder *QueryBuilder) paginate(paginate bool, page int, perPage int)
 
 	queryBuilder.SetLimitOffsetByPage(page, perPage)
 	// Execute the query
-	rows, err := queryBuilder.Db.QueryContext(ctx, queryBuilder.MakeSelectSql(), queryBuilder.GetParams()...)
+	stmt, pErr := queryBuilder.Db.Prepare(queryBuilder.MakeCountSelectSql())
+
+	if pErr != nil {
+		logger.LogError(pErr)
+
+		return nil, &pager, exception.NewAppException(http.StatusInternalServerError, pErr, nil)
+	}
+
+	rows, err := stmt.Query(queryBuilder.GetParams()...)
 
 	if err != nil {
 		logger.LogError(err)
