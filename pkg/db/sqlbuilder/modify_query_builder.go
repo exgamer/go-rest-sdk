@@ -20,17 +20,25 @@ func NewModifyQueryBuilder() *ModifyQueryBuilder {
 }
 
 func NewMysqlModifyQueryBuilder() *ModifyQueryBuilder {
-	return &ModifyQueryBuilder{
+	qb := &ModifyQueryBuilder{
 		timeout: 30,
-		DbType:  "postgres",
+		DbType:  "mysql",
 	}
+
+	qb.QueryData.DbType = qb.DbType
+
+	return qb
 }
 
 func NewPostgresModifyQueryBuilder() *ModifyQueryBuilder {
-	return &ModifyQueryBuilder{
+	qb := &ModifyQueryBuilder{
 		timeout: 30,
 		DbType:  "postgres",
 	}
+
+	qb.QueryData.DbType = qb.DbType
+
+	return qb
 }
 
 // QueryBuilder - query builder

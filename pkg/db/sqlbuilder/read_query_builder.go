@@ -23,17 +23,25 @@ func NewReadQueryBuilder[E interface{}]() *ReadQueryBuilder[E] {
 }
 
 func NewMysqlReadQueryBuilder[E interface{}]() *ReadQueryBuilder[E] {
-	return &ReadQueryBuilder[E]{
+	qb := &ReadQueryBuilder[E]{
 		timeout: 30,
-		DbType:  "postgres",
+		DbType:  "mysql",
 	}
+
+	qb.QueryData.DbType = qb.DbType
+
+	return qb
 }
 
 func NewPostgresReadQueryBuilder[E interface{}]() *ReadQueryBuilder[E] {
-	return &ReadQueryBuilder[E]{
+	qb := &ReadQueryBuilder[E]{
 		timeout: 30,
 		DbType:  "postgres",
 	}
+
+	qb.QueryData.DbType = qb.DbType
+
+	return qb
 }
 
 // QueryBuilder - query builder
