@@ -52,5 +52,5 @@ func logError(message string, c *gin.Context, config *structures.AppConfig) {
 }
 
 func logResponse(level string, message string, c *gin.Context, config *structures.AppConfig) {
-	jLog.PrintJLog(level, config.Name, c.Request.Method, c.Request.RequestURI, c.Writer.Status(), c.GetHeader(jConstants.RequestIdHeaderName), message)
+	jLog.PrintJLog(level, config.Name, c.Request.Method, c.FullPath(), c.Writer.Status(), c.GetHeader(jConstants.RequestIdHeaderName), message)
 }
